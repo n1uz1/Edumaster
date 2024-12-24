@@ -11,18 +11,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Comment 服务实现类
- */
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
-
     @Autowired
     private ReplyMapper replyMapper;
-
     @Override
     public List<Comment> getAllComments() {
         List<Comment> comments = commentMapper.selectList(new QueryWrapper<Comment>());
@@ -76,5 +72,22 @@ public class CommentServiceImpl implements CommentService {
 
         // 删除评论
         commentMapper.deleteById(id);
+    }
+    @Override
+    public List<Comment> getCommentsByUsername(String username) {
+        // 查询该用户名下的所有评论
+        QueryWrapper<Comment> commentQuery = new QueryWrapper<>();
+        commentQuery.eq("username", username);  // 假设 Comment 表中有 username 字段
+        List<Comment> comments = commentMapper.selectList(commentQuery);
+
+        // 查询每个评论的回复
+        for (Comment comment : comments) {
+            QueryWrapper<Reply> replyQuery = new QueryWrapper<>();
+            replyQuery.eq("comment_id", comment.getId());
+            List<Reply> replies = replyMapper.selectList(replyQuery);
+            comment.setReplies(replies);
+        }
+
+        return comments;
     }
 }
