@@ -71,5 +71,15 @@ public class CommentController {
     public List<Comment> getCommentsByUsername(@PathVariable String username) {
         return commentService.getCommentsByUsername(username);
     }
+    // 根据视频ID获取该视频的所有评论
+    @GetMapping("/lesson/{courseId}/{lessonId}")
+    public List<Comment> getCommentsByVideoId(@PathVariable Long courseId, @PathVariable Long lessonId) {
+        return commentService.getCommentsByVideo(courseId, lessonId);
+    }
+    // 获取所有普通评论（不包含视频评论）
+    @GetMapping("/forum")
+    public List<Comment> getForumComments() {
+        return commentService.getForumComments();
+    }
 
 }

@@ -90,4 +90,32 @@ public class CommentServiceImpl implements CommentService {
 
         return comments;
     }
+    @Override
+    public List<Comment> getCommentsByVideo(Long courseId, Long lessonId) {
+        QueryWrapper<Comment> commentQuery = new QueryWrapper<>();
+        commentQuery.eq("course_id", courseId)
+                .eq("lesson_id", lessonId);
+        List<Comment> comments = commentMapper.selectList(commentQuery);
+        for (Comment comment : comments) {
+            QueryWrapper<Reply> replyQuery = new QueryWrapper<>();
+            replyQuery.eq("comment_id", comment.getId());
+            List<Reply> replies = replyMapper.selectList(replyQuery);
+            comment.setReplies(replies);
+        }
+        return comments;
+    }
+    @Override
+    public List<Comment> getForumComments() {
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNull("course_id")
+                .isNull("lesson_id");
+        List<Comment> comments = commentMapper.selectList(queryWrapper);
+        for (Comment comment : comments) {
+            QueryWrapper<Reply> replyQuery = new QueryWrapper<>();
+            replyQuery.eq("comment_id", comment.getId());
+            List<Reply> replies = replyMapper.selectList(replyQuery);
+            comment.setReplies(replies);
+        }
+        return comments;
+    }
 }

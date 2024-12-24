@@ -20,4 +20,6 @@ public class Comment {
     private Integer likes;
     @TableField(exist = false)
     private List<Reply> replies;
+    private Long courseId;  // 关联课程ID
+    private Long lessonId;  // 关联课程中的具体课程ID
 }

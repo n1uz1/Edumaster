@@ -13,5 +13,7 @@ public interface CommentService {
     Reply addReply(Long commentId, Reply reply);
     void deleteComment(Long id);
     List<Comment> getCommentsByUsername(String username);
-
+    List<Comment> getCommentsByVideo(Long courseId, Long lessonId);
+    // 新增方法：获取论坛评论
+    List<Comment> getForumComments();
 }
