@@ -229,7 +229,7 @@
                 size="small"
                 @click="goToCourseDetail(scope.row.id)"
               >
-                进入课��
+                进入课程
               </el-button>
             </template>
           </el-table-column>
@@ -365,9 +365,17 @@ export default {
     async viewCourseDetail(id) {
       try {
         const response = await axios.get(`http://localhost:8081/courses/${id}`)
-        if (response.data && response.data.data) {
-          this.currentCourseDetail = response.data.data
+        if (response.data && response.data.code === 200) {
+          const courseData = response.data.data
+          this.currentCourseDetail = {
+            courseId: courseData.courseId,
+            title: courseData.title,
+            description: courseData.description,
+            creatorId: courseData.creatorId
+          }
           this.detailDialogVisible = true
+        } else {
+          this.$message.error(response.data.message || '获取课程详情失败')
         }
       } catch (error) {
         this.$message.error('获取课程详情失败：' + error.message)
@@ -424,17 +432,29 @@ export default {
         this.$message.warning('请选择要删除的课程')
         return
       }
-      
+
       try {
-        await axios.delete(`http://localhost:8081/courses/${this.selectedCourse.id}`)
-        this.$message.success('课程删除成功')
-        this.deleteDialogVisible = false
-        // 从列表中移除已删除的课程
-        this.myPublishedCourses = this.myPublishedCourses.filter(
-          course => course.id !== this.selectedCourse.id
-        )
-        this.selectedCourse = null
-        // 这里可以添加刷新课程列表的逻辑
+        const response = await axios.delete(`http://localhost:8081/courses/${this.selectedCourse.id}`)
+        if (response.data && response.data.code) {
+          switch (response.data.code) {
+            case 201:
+              this.$message.success(response.data.message || '课程删除成功')
+              this.deleteDialogVisible = false
+              // 从列表中移除已删除的课程
+              this.myPublishedCourses = this.myPublishedCourses.filter(
+                course => course.id !== this.selectedCourse.id
+              )
+              this.selectedCourse = null
+              break
+            case 404:
+              this.$message.error(response.data.message || '课程未找到')
+              break
+            default:
+              this.$message.error(response.data.message || '删除失败')
+          }
+        } else {
+          this.$message.error('删除失败：服务器返回数据格式错误')
+        }
       } catch (error) {
         this.$message.error('删除课程失败：' + error.message)
       }
@@ -468,8 +488,8 @@ export default {
           }
         )
         
-        if (response.data) {
-          this.$message.success('课程更新成功')
+        if (response.data && response.data.code === 200) {
+          this.$message.success(response.data.message || '课程更新成功')
           this.editFormDialogVisible = false
           
           // 更新本地课程列表
@@ -491,6 +511,8 @@ export default {
             description: '',
             creatorId: 1
           }
+        } else {
+          this.$message.error(response.data.message || '更新失败')
         }
       } catch (error) {
         this.$message.error('更新课程失败：' + error.message)
@@ -504,25 +526,28 @@ export default {
           }
         })
         
-        if (response.data) {
+        if (response.data && response.data.code === 200) {
+          const coursesData = response.data.data || []
           // 确保返回的数据是数组
-          this.courses = Array.isArray(response.data) ? response.data : [response.data]
+          this.courses = Array.isArray(coursesData) ? coursesData : [coursesData]
           
           // 格式化数据以适应表格显示
           this.courses = this.courses.map(course => ({
-            id: course.id,
+            id: course.courseId,
             name: course.title,
-            instructor: course.instructor || '未知',
-            duration: course.duration || '未设置'
+            instructor: course.creatorId,
+            description: course.description,
+            duration: '未设置'
           }))
           
           if (this.courses.length === 0) {
             this.$message.info('未找到匹配的课程')
           }
+        } else {
+          this.$message.error('搜索失败：' + (response.data.message || '未知错误'))
         }
       } catch (error) {
         this.$message.error('搜索课程失败：' + error.message)
-        this.courses = []
       }
     },
     async loadAllCourses() {
@@ -577,15 +602,16 @@ export default {
     async handleViewJoinedCourses() {
       try {
         const response = await axios.get(`http://localhost:8081/users/${this.userId}/courses`)
-        if (response.data) {
+        if (response.data && response.data.code === 200) {
           // 确保返回的数据是数组
-          const coursesData = Array.isArray(response.data) ? response.data : [response.data]
+          const coursesData = response.data.data || []
           
           // 格式化课程数据
           this.joinedCourses = coursesData.map(course => ({
-            id: course.id,
+            id: course.courseId,
             title: course.title,
-            description: course.description
+            description: course.description,
+            instructor: course.creatorId
           }))
           
           this.joinedCoursesDialogVisible = true
@@ -593,6 +619,8 @@ export default {
           if (this.joinedCourses.length === 0) {
             this.$message.info('您还没有加入任何课程')
           }
+        } else {
+          this.$message.error(response.data.message || '获取课程列表失败')
         }
       } catch (error) {
         this.$message.error('获取课程列表失败：' + error.message)
