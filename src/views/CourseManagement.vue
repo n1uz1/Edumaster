@@ -198,7 +198,7 @@
     </el-dialog>
 
     <!-- 课程详情弹窗 -->
-    <el-dialog v-model="detailDialogVisible" title="课程详情" width="40%">
+    <el-dialog v-model="detailDialogVisible" title="课���详情" width="40%">
       <div class="course-detail-content" v-if="currentCourseDetail">
         <div class="detail-item">
           <label>课程名称：</label>
@@ -520,11 +520,16 @@ export default {
     },
     async handleSearch() {
       try {
-        const response = await axios.get(`http://localhost:8081/courses/search`, {
-          params: {
-            title: this.searchQuery
-          }
-        })
+        let url = 'http://localhost:8081/courses'
+        let params = {}
+        
+        // 如果搜索关键词不为空，则使用搜索API
+        if (this.searchQuery && this.searchQuery.trim()) {
+          url = `${url}/search`
+          params = { title: this.searchQuery.trim() }
+        }
+        
+        const response = await axios.get(url, { params })
         
         if (response.data && response.data.code === 200) {
           const coursesData = response.data.data || []
