@@ -229,7 +229,7 @@
                 size="small"
                 @click="goToCourseDetail(scope.row.id)"
               >
-                进入课程
+                进入课��
               </el-button>
             </template>
           </el-table-column>
@@ -380,22 +380,36 @@ export default {
       this.currentPage = page
     },
     handleUploadSuccess(response) {
-      this.fileUrl = response.url
-      this.$message.success('文件上传成功')
+      if (response && response.url) {
+        this.fileUrl = response.url
+        this.$message.success(response.message || '文件上传成功')
+      } else {
+        this.$message.error('上传失败：返回的URL为空')
+      }
     },
-    handleUploadError() {
-      this.$message.error('文件上传失败')
+    handleUploadError(error) {
+      this.$message.error('文件上传失败：' + error.message)
     },
     async submitCourse() {
       try {
-        const response = await axios.post('http://localhost:8081/courses', this.newCourse)
-        if (response.data) {
-          this.$message.success('课程发布成功')
+        const courseData = {
+          title: this.newCourse.title,
+          description: this.newCourse.description,
+          creatorId: 1  // 这里可以根据实际登录用户ID设置
+        }
+        
+        const response = await axios.post('http://localhost:8081/courses', courseData)
+        
+        if (response.data && response.data.code === 201) {
+          this.$message.success(response.data.message || '课程发布成功')
           this.publishDialogVisible = false
           // 重置表单
           this.newCourse.title = ''
           this.newCourse.description = ''
           // 这里可以添加刷新课程列表的逻辑
+          await this.loadCourses() // 刷新课程列表
+        } else {
+          this.$message.error(response.data.message || '课程发布失败')
         }
       } catch (error) {
         this.$message.error('课程发布失败：' + error.message)
@@ -610,7 +624,7 @@ export default {
           courseId: this.selectedCourseForFile.id,
           lessonId: 101, // 这里可以根据需要生成或获取
           title: `${this.selectedCourseForFile.title} 入门`,
-          videoUrl: this.tempFileUrl,
+          videoUrl: this.tempFileUrl.url || this.tempFileUrl, // 兼容新旧格式
           description: `学习如何使用 ${this.selectedCourseForFile.title} 构建应用`
         }
         
