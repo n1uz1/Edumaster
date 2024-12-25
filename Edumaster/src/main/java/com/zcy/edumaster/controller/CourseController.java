@@ -112,4 +112,24 @@ public class CourseController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 获取所有课程
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllCourses() {
+        List<Course> courses = courseService.getAllCourses();
+
+        // 创建返回的响应体
+        Map<String, Object> response = new HashMap<>();
+        if (courses.isEmpty()) {
+            response.put("code", HttpStatus.NOT_FOUND.value());
+            response.put("message", "暂无课程数据");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.put("code", HttpStatus.OK.value());
+        response.put("message", "获取所有课程成功");
+        response.put("data", courses);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

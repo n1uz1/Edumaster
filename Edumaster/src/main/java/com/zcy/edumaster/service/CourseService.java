@@ -13,6 +13,10 @@ public class CourseService extends ServiceImpl<CourseMapper, Course> {
     @Autowired
     private CourseMapper courseMapper;
 
+    public List<Course> getAllCourses() {
+        return courseMapper.getAllCourses();
+    }
+
     // 创建课程
     public boolean createCourse(Course course) {
         return save(course);  // 使用MyBatis-Plus的save方法

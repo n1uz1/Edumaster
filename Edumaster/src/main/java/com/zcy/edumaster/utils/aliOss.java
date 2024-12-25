@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class aliOss {
     private static final String ENDPOINT = "https://oss-cn-beijing.aliyuncs.com";
-//    private static final String ACCESSKEYID="LTAI5tRzGBtYieLTPrfBKxqV";
-//    private static final String ACCESSKEYSECRET="UlLaeoF4P3MQZk68wyHDLyrFzwHFOB";
+    private static final String ACCESSKEYID="LTAI5tRzGBtYieLTPrfBKxqV";
+    private static final String ACCESSKEYSECRET="UlLaeoF4P3MQZk68wyHDLyrFzwHFOB";
     private static final String BUCKETNAME = "edumaster";
 
     public static String uploadFile(String objectName, InputStream in) throws Exception {
