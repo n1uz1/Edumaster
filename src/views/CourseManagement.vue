@@ -198,7 +198,7 @@
     </el-dialog>
 
     <!-- 课程详情弹窗 -->
-    <el-dialog v-model="detailDialogVisible" title="课���详情" width="40%">
+    <el-dialog v-model="detailDialogVisible" title="课程详情" width="40%">
       <div class="course-detail-content" v-if="currentCourseDetail">
         <div class="detail-item">
           <label>课程名称：</label>
@@ -656,18 +656,20 @@ export default {
         const lessonData = {
           courseId: this.selectedCourseForFile.id,
           lessonId: 101, // 这里可以根据需要生成或获取
-          title: `${this.selectedCourseForFile.title} 入门`,
+          title: `${this.selectedCourseForFile.title} `,
           videoUrl: this.tempFileUrl.url || this.tempFileUrl, // 兼容新旧格式
-          description: `学习如何使用 ${this.selectedCourseForFile.title} 构建应用`
+          description: `${this.selectedCourseForFile.title} `
         }
         
         const response = await axios.post('http://localhost:8081/course-lessons', lessonData)
         
-        if (response.data) {
-          this.$message.success('课程文件添加成功')
+        if (response.data && response.data.code === 201) {
+          this.$message.success(response.data.message || '课程节课创建成功')
           this.addFileDialogVisible = false
           this.tempFileUrl = ''
           this.selectedCourseForFile = null
+        } else {
+          this.$message.error(response.data.message || '添加课程文件失败')
         }
       } catch (error) {
         this.$message.error('添加课程文件失败：' + error.message)

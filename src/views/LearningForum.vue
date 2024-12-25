@@ -69,6 +69,14 @@
                     {{ tag }}
                   </el-tag>
                 </div>
+                <div class="post-actions">
+                  <el-button 
+                    type="text" 
+                    @click="loadComments(post.id)"
+                  >
+                    评论 ({{ post.commentCount || 0 }})
+                  </el-button>
+                </div>
                 <el-button 
                   type="primary" 
                   size="small" 
@@ -76,6 +84,36 @@
                 >
                   查看详情
                 </el-button>
+              </div>
+              <div v-if="post.showComments" class="comments-section">
+                <div class="comment-input">
+                  <el-button 
+                    type="primary" 
+                    size="small" 
+                    @click="showCommentDialog(post.id)"
+                  >
+                    发表评论
+                  </el-button>
+                </div>
+                <div v-if="post.comments && post.comments.length > 0" class="comments-list">
+                  <div v-for="comment in post.comments" :key="comment.id" class="comment-item">
+                    <div class="comment-header">
+                      <span class="comment-author">{{ comment.author }}</span>
+                      <span class="comment-time">{{ comment.createTime }}</span>
+                    </div>
+                    <div class="comment-content">{{ comment.content }}</div>
+                    <div class="comment-footer">
+                      <span class="likes">
+                        <i class="el-icon-star-off"></i>
+                        {{ comment.likes }} 赞
+                      </span>
+                      <span class="replies-count" v-if="comment.replies.length > 0">
+                        {{ comment.replies.length }} 条回复
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="no-comments">暂无评论</div>
               </div>
             </el-card>
           </div>
@@ -122,10 +160,42 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 添加发布评论的对话框 -->
+    <el-dialog 
+      v-model="commentDialogVisible" 
+      title="发表评论" 
+      width="40%"
+    >
+      <el-form :model="newComment" ref="commentForm">
+        <el-form-item 
+          label="评论内容" 
+          prop="content"
+          :rules="[
+            { required: true, message: '请输入评论内容', trigger: 'blur' }
+          ]"
+        >
+          <el-input
+            v-model="newComment.content"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入您的评论"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="commentDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitComment">发布</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'LearningForum',
   data() {
@@ -161,7 +231,13 @@ export default {
           replies: 12,
           tags: ['求助', '技术分享']
         }
-      ]
+      ],
+      currentPostId: null,
+      commentDialogVisible: false,
+      newComment: {
+        content: '',
+        postId: null
+      }
     }
   },
   methods: {
@@ -185,6 +261,67 @@ export default {
     },
     viewPost(postId) {
       this.$router.push(`/forum-post/${postId}`)
+    },
+    async loadComments(postId) {
+      // 切换评论显示状态
+      const post = this.posts.find(p => p.id === postId)
+      if (post) {
+        post.showComments = !post.showComments
+        
+        // 如果是显示评论且还没有加载过评论
+        if (post.showComments && (!post.comments || post.comments.length === 0)) {
+          try {
+            const response = await axios.get('http://localhost:8081/comments')
+            if (Array.isArray(response.data)) {
+              // 更新帖子的评论
+              post.comments = response.data.map(comment => ({
+                id: comment.id,
+                author: comment.username,
+                content: comment.content,
+                createTime: new Date(comment.time).toLocaleString(),
+                likes: comment.likes,
+                replies: comment.replies || []
+              }))
+            }
+          } catch (error) {
+            this.$message.error('加载评论失败：' + error.message)
+            post.comments = []
+          }
+        }
+      }
+    },
+    showCommentDialog(postId) {
+      this.newComment.postId = postId
+      this.commentDialogVisible = true
+    },
+    async submitComment() {
+      try {
+        if (!this.newComment.content.trim()) {
+          this.$message.warning('请输入评论内容')
+          return
+        }
+        
+        const response = await axios.post('http://localhost:8081/comments', {
+          username: '当前用户', // 这里可以替换为实际的用户名
+          content: this.newComment.content
+        })
+        
+        if (response.data && response.data.code === 201) {
+          this.$message.success('评论发布成功')
+          this.commentDialogVisible = false
+          
+          // 重新加载评论列表
+          await this.loadComments(this.newComment.postId)
+          
+          // 重置表单
+          this.newComment.content = ''
+          this.newComment.postId = null
+        } else {
+          this.$message.error(response.data.message || '评论发布失败')
+        }
+      } catch (error) {
+        this.$message.error('评论发布失败：' + error.message)
+      }
     }
   }
 }
@@ -339,5 +476,79 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   margin-top: 15px;
+}
+
+.comments-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.comment-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.comment-author {
+  font-weight: bold;
+  color: #409EFF;
+}
+
+.comment-time {
+  color: #909399;
+  font-size: 12px;
+}
+
+.comment-content {
+  color: #333;
+  margin: 8px 0;
+}
+
+.no-comments {
+  text-align: center;
+  color: #909399;
+  padding: 10px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.comment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #909399;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.replies-count {
+  color: #409EFF;
+  cursor: pointer;
+}
+
+.comment-input {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+  display: flex;
+  justify-content: flex-end;
 }
 </style> 

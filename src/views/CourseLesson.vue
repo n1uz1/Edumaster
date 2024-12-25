@@ -102,7 +102,7 @@
           </el-card>
         </div>
         <div v-else class="no-files">
-          暂无课程资料
+          暂无课程��料
         </div>
       </div>
 
@@ -159,35 +159,57 @@ export default {
   name: 'CourseLesson',
   data() {
     return {
-      courseId: null,
+      showLearningMenu: false,
+      showAdviceMenu: false,
       courseTitle: '',
-      currentLessonId: null,
       currentLesson: null,
-      lessonsList: [],
-      courseFiles: [],
       comments: [],
+      courseFiles: [],
       deleteFileDialogVisible: false,
-      selectedFile: null,
-      showAdviceMenu: false
+      selectedFile: null
     }
   },
+  async created() {
+    await this.loadLessonData()
+  },
   methods: {
-    async loadLesson(courseId, lessonId) {
+    async loadLessonData() {
+      const { courseId, lessonId } = this.$route.params
       try {
-        const response = await axios.get(`http://localhost:8081/course-lessons/${courseId}/${lessonId}`)
-        if (response.data && response.data.data) {
-          this.currentLesson = response.data.data
-          this.currentLessonId = String(lessonId)
+        const response = await axios.get(
+          `http://localhost:8081/course-lessons/${courseId}/${lessonId}`
+        )
+        
+        if (response.data && response.data.code === 200) {
+          const lessonData = response.data.data
+          this.currentLesson = {
+            title: lessonData.title,
+            description: lessonData.description,
+            videoUrl: lessonData.videoUrl
+          }
+          this.courseTitle = lessonData.title
+        } else {
+          this.$message.error(response.data.message || '加载课程内容失败')
         }
       } catch (error) {
-        this.$message.error('加载课程视频失败：' + error.message)
+        this.$message.error('加载课程内容失败：' + error.message)
       }
     },
     async loadCourseFiles(courseId) {
       try {
         const response = await axios.get(`http://localhost:8081/course-files/course/${courseId}`)
-        if (response.data && response.data.data) {
-          this.courseFiles = Array.isArray(response.data.data) ? response.data.data : [response.data.data]
+        if (response.data) {
+          this.courseFiles = response.data.map(file => ({
+            fileId: file.fileId,
+            courseId: file.courseId,
+            fileUrl: file.fileUrl,
+            fileName: file.fileName,
+            filetype: file.filetype
+          }))
+          
+          if (this.courseFiles.length === 0) {
+            this.$message.info('该课程暂无资料')
+          }
         }
       } catch (error) {
         this.$message.error('加载课程资料失败：' + error.message)
@@ -231,31 +253,24 @@ export default {
       }
       
       try {
-        await axios.delete(
+        const response = await axios.delete(
           `http://localhost:8081/course-lessons/${this.courseId}/${this.selectedFile.lessonId}`
         )
         
-        this.$message.success('文件删除成功')
-        this.deleteFileDialogVisible = false
-        
-        this.courseFiles = this.courseFiles.filter(
-          file => file.lessonId !== this.selectedFile.lessonId
-        )
-        
-        this.selectedFile = null
+        if (response.data && response.data.code === 200) {
+          this.$message.success(response.data.message || '课程节课删除成功')
+          this.deleteFileDialogVisible = false
+          
+          this.courseFiles = this.courseFiles.filter(
+            file => file.lessonId !== this.selectedFile.lessonId
+          )
+          this.selectedFile = null
+        } else {
+          this.$message.error(response.data.message || '删除失败')
+        }
       } catch (error) {
         this.$message.error('删除文件失败：' + error.message)
       }
-    }
-  },
-  async created() {
-    this.courseId = this.$route.params.courseId
-    const lessonId = this.$route.params.lessonId
-    
-    if (this.courseId && lessonId) {
-      await this.loadLesson(this.courseId, lessonId)
-      await this.loadCourseFiles(this.courseId)
-      await this.loadComments(this.courseId, lessonId)
     }
   },
   watch: {
