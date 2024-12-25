@@ -46,6 +46,21 @@ const routes = [
     path: '/learning-path',
     name: 'LearningPath',
     component: () => import('../views/LearningPath.vue')
+  },
+  {
+    path: '/course/:courseId/lesson/:lessonId',
+    name: 'CourseLesson',
+    component: () => import('../views/CourseLesson.vue')
+  },
+  {
+    path: '/learning-forum',
+    name: 'LearningForum',
+    component: () => import('../views/LearningForum.vue')
+  },
+  {
+    path: '/forum-post/:postId',
+    name: 'ForumPost',
+    component: () => import('../views/ForumPost.vue')
   }
 ]
 

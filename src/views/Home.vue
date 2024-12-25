@@ -28,6 +28,7 @@
           <div class="sub-menu" v-show="showAdviceMenu">
             <router-link to="/course-recommendation">用户课程推荐</router-link>
             <router-link to="/learning-path">学习路径建议</router-link>
+            <router-link to="/learning-forum">学习论坛</router-link>
           </div>
         </el-button>
       </div>
