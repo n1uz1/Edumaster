@@ -77,29 +77,20 @@
         <el-table-column prop="instructor" label="讲师" />
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">
-            <div class="operation-buttons">
-              <el-button
-                @click="viewCourseDetail(scope.row)"
-                type="text"
-                size="small"
-              >
-                查看详情
-              </el-button>
-              <el-button
-                type="warning"
-                size="small"
-                @click="handleEditCourse(scope.row)"
-              >
-                编辑
-              </el-button>
-              <el-button
-                type="danger"
-                size="small"
-                @click="handleDeleteCourse(scope.row)"
-              >
-                删除
-              </el-button>
-            </div>
+            <el-button
+              type="primary"
+              size="small"
+              @click="$router.push(`/course-detail/${scope.row.courseId}`)"
+            >
+              进入课程
+            </el-button>
+            <el-button
+              type="info"
+              size="small"
+              @click="handleViewDetail(scope.row)"
+            >
+              查看详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -504,8 +495,20 @@ export default {
         this.$message.error('删除课程失败：' + error.message)
       }
     },
-    handleEditCourse() {
-      this.editSelectDialogVisible = true
+    handleEditCourse(course) {
+      // 设置要编辑的课程信息
+      this.editingCourse = {
+        courseId: course.courseId,
+        title: course.title,
+        description: course.description,
+        creatorId: 1
+      }
+      
+      // 关闭"我的课程"弹窗
+      this.myCoursesDialogVisible = false
+      
+      // 打开编辑表单弹窗
+      this.editFormDialogVisible = true
     },
     handleEditSelectionChange(selection) {
       this.selectedEditCourse = selection[0]
@@ -526,7 +529,7 @@ export default {
     async submitEdit() {
       try {
         const response = await axios.put(
-          `http://localhost:8081/courses/${this.editingCourse.id}`,
+          `http://localhost:8081/courses/${this.editingCourse.courseId}`,
           {
             title: this.editingCourse.title,
             description: this.editingCourse.description,
@@ -536,25 +539,31 @@ export default {
         )
         
         if (response.data && response.data.code === 200) {
+          // 关闭编辑表单弹窗
           this.editFormDialogVisible = false
           
+          // 更新本地课程列表中的数据
           const index = this.myPublishedCourses.findIndex(
-            course => course.id === this.editingCourse.id
+            course => course.courseId === this.editingCourse.id
           )
           if (index !== -1) {
             this.myPublishedCourses[index] = {
               ...this.myPublishedCourses[index],
-              ...this.editingCourse
+              title: this.editingCourse.title,
+              description: this.editingCourse.description
             }
           }
           
-          this.selectedEditCourse = null
+          // 重置编辑表单
           this.editingCourse = {
             id: null,
             title: '',
             description: '',
             creatorId: 1
           }
+          
+          // 重新加载课程列表
+          this.loadAllCourses()
         }
       } catch {
         // 静默处理错误
