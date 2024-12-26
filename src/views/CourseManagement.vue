@@ -78,18 +78,18 @@
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">
             <el-button
-              type="warning"
+              type="primary"
               size="small"
-              @click="handleEditCourse(scope.row)"
+              @click="$router.push(`/course-detail/${scope.row.courseId}`)"
             >
-              编辑
+              进入课程
             </el-button>
             <el-button
-              type="danger"
+              type="info"
               size="small"
-              @click="handleDeleteCourse(scope.row)"
+              @click="handleViewDetail(scope.row)"
             >
-              删除
+              查看详情
             </el-button>
           </template>
         </el-table-column>
@@ -224,11 +224,18 @@
           <el-table-column fixed="right" label="操作" width="120">
             <template #default="scope">
               <el-button
-                type="primary"
+                type="warning"
                 size="small"
-                @click="$router.push(`/course-detail/${scope.row.id}`)"
+                @click="handleEditCourse(scope.row)"
               >
-                进入课程
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                size="small"
+                @click="handleDeleteCourse(scope.row)"
+              >
+                删除
               </el-button>
             </template>
           </el-table-column>
