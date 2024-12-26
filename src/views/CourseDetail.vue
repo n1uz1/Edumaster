@@ -14,58 +14,37 @@
       <div class="course-intro">{{ $route.query.description }}</div>
 
       <div class="video-section">
-        <h2>课程视频</h2>
-        <div class="video-list">
-          <!-- 第一个视频 -->
-          <div class="video-item" @click="playVideo('https://edumaster.oss-cn-beijing.aliyuncs.com/WeChat_20241226021016.mp4')">
-            <div class="video-thumbnail">
-              <div class="thumbnail-bg"></div>
-              <div class="play-icon">
-                <i class="el-icon-video-play"></i>
-              </div>
-            </div>
-            <div class="video-info">
-              <h3>第一讲：课程介绍</h3>
-              <div class="video-actions">
-                <el-button 
-                  type="text" 
-                  class="view-comments-btn"
-                  @click.stop="viewComments({
-                    title: '第一讲：课程介绍',
-                    type: 'video'
-                  })"
-                >
-                  查看评论
-                </el-button>
-              </div>
-            </div>
-          </div>
-
-          <!-- 第二个视频 -->
-          <div class="video-item" @click="playVideo('https://edumaster.oss-cn-beijing.aliyuncs.com/WeChat_20241226021016.mp4')">
-            <div class="video-thumbnail">
-              <div class="thumbnail-bg"></div>
-              <div class="play-icon">
-                <i class="el-icon-video-play"></i>
-              </div>
-            </div>
-            <div class="video-info">
-              <h3>第二讲：基础动作</h3>
-              <div class="video-actions">
-                <el-button 
-                  type="text" 
-                  class="view-comments-btn"
-                  @click.stop="viewComments({
-                    title: '第二讲：基础动作',
-                    type: 'video'
-                  })"
-                >
-                  查看评论
-                </el-button>
-              </div>
-            </div>
-          </div>
+  <h2>课程视频</h2>
+  <div class="video-list">
+    <div v-for="lesson in courseLessons" 
+         :key="lesson.courseLessonId" 
+         class="video-item" 
+         @click="playVideo(lesson.videoUrl)"
+    >
+      <div class="video-thumbnail">
+        <div class="thumbnail-bg"></div>
+        <div class="play-icon">
+          <i class="el-icon-video-play"></i>
         </div>
+      </div>
+      <div class="video-info">
+        <h3>{{ lesson.title }}</h3>
+        <div class="video-actions">
+          <el-button 
+            type="text" 
+            class="view-comments-btn"
+            @click.stop="viewComments({
+              title: lesson.title,
+              type: 'video'
+            })"
+          >
+            查看评论
+          </el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+        
 
         <!-- 视频播放器 -->
         <div v-if="showVideoPlayer" class="video-player-modal">
@@ -261,12 +240,15 @@ export default {
         fileUrl: ''
       },
       uploadedFile: null,
-      courseTitle: this.$route.query.title
+      courseTitle: this.$route.query.title,
+      courseLessons: []
     }
   },
+  
   created() {
-    document.title = `${this.courseTitle} - 课程详情`
+    this.loadCourseLessons()
   },
+  
   methods: {
     openVideo(video) {
       this.currentFile = {
@@ -378,6 +360,26 @@ export default {
           
           // 重新加载课程列表（如果需要）
           // this.loadLessons()
+        }
+      } catch {
+        // 静默处理错误
+      }
+    },
+    async loadCourseLessons() {
+      try {
+        const courseId = this.$route.query.courseId
+        const response = await axios.get(`http://localhost:8081/course-lessons/course/${courseId}`)
+        
+        if (response.data && response.data.code === 200) {
+          // 处理返回的课程列表数据
+          this.courseLessons = response.data.data.map(lesson => ({
+            courseLessonId: lesson.courseLessonId,
+            courseId: lesson.courseId,
+            lessonId: lesson.lessonId,
+            title: lesson.title,
+            videoUrl: lesson.videoUrl,
+            description: lesson.description
+          }))
         }
       } catch {
         // 静默处理错误
