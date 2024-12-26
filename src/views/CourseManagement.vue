@@ -290,6 +290,35 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 我的课程弹窗 -->
+    <el-dialog v-model="myCoursesDialogVisible" title="我的课程" width="50%">
+      <div class="my-courses-content">
+        <el-table :data="myPublishedCourses" style="width: 100%">
+          <el-table-column prop="courseId" label="课号" width="100" />
+          <el-table-column prop="title" label="课程标题" />
+          <el-table-column prop="description" label="课程简介" show-overflow-tooltip />
+          <el-table-column fixed="right" label="操作" width="200">
+            <template #default="scope">
+              <el-button
+                type="warning"
+                size="small"
+                @click="handleEditCourse(scope.row)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                size="small"
+                @click="handleDeleteCourse(scope.row)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -358,6 +387,7 @@ export default {
       selectedCourseForFile: null,
       tempFileUrl: '',
       courseList: [],
+      myCoursesDialogVisible: false,
     }
   },
   methods: {
@@ -612,17 +642,17 @@ export default {
     },
     async handleViewJoinedCourses() {
       try {
-        const response = await axios.get(`http://localhost:8081/users/${this.userId}/courses`)
+        const response = await axios.get(`http://localhost:8081/users/1/courses`)
         if (response.data && response.data.code === 200) {
           // 确保返回的数据是数组
           const coursesData = response.data.data || []
           
           // 格式化课程数据
           this.joinedCourses = coursesData.map(course => ({
-            id: course.courseId,
+            courseId: course.courseId,
             title: course.title,
             description: course.description,
-            instructor: course.username
+            creatorId: course.creatorId
           }))
           
           this.joinedCoursesDialogVisible = true
@@ -698,6 +728,7 @@ export default {
         // 静默处理错误
       }
     },
+    
   },
   created() {
     this.loadAllCourses()
@@ -921,5 +952,9 @@ a:hover {
 .username {
   font-size: 14px;
   color: #333;
+}
+
+.my-courses-content {
+  padding: 20px 0;
 }
 </style> 
