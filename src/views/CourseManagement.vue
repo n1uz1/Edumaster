@@ -546,11 +546,11 @@ export default {
           const coursesData = response.data.data || []
           this.courses = Array.isArray(coursesData) ? coursesData : [coursesData]
           this.courses = this.courses.map(course => ({
-            id: course.courseId,
             name: course.title,
             instructor: course.username,
             description: course.description,
-            duration: '未设置'
+            courseId: course.courseId,
+            creatorId: 1//先写死
           }))
         }
       } catch {
