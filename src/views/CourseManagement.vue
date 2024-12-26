@@ -37,8 +37,6 @@
           <el-button @click="$router.push('/')">返回首页</el-button>
           <el-button @click="handleViewJoinedCourses">我的课程</el-button>
           <el-button type="primary" @click="handlePublishCourse">创建课程</el-button>
-          <el-button type="danger" @click="handleDeleteCourse">删除课程</el-button>
-          <el-button type="warning" @click="handleEditCourse">编辑课程</el-button>
         </div>
         <div class="user-info">
           <span class="username" ref="username">张老师</span>
@@ -80,7 +78,15 @@
             <el-button
               type="primary"
               size="small"
-              @click="$router.push(`/course-detail/${scope.row.courseId}`)"
+              @click="$router.push({
+                path: `/course-detail/${scope.row.courseId}`,
+                query: {
+                  title: scope.row.title,
+                  creatorId: 1,
+                  description: scope.row.description,
+                  courseId:scope.row.courseId
+                }
+              })"
             >
               进入课程
             </el-button>

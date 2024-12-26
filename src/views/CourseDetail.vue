@@ -3,14 +3,15 @@
     <header class="header">
       <h1>课程详情</h1>
       <el-button @click="$router.push('/course-management')">返回</el-button>
+      <el-button type="primary" @click="showAddLessonDialog">添加课程文件</el-button>
       <div class="user-info">张老师</div>
     </header>
 
     <div class="course-content">
-      <h2 class="course-title">舞蹈基础课</h2>
+      <h2 class="course-title">{{ $route.query.title }}</h2>
       <div class="course-image">
       </div>
-      <div class="course-intro">一个舞蹈的基本课程</div>
+      <div class="course-intro">{{ $route.query.description }}</div>
 
       <div class="video-section">
         <h2>课程视频</h2>
@@ -137,10 +138,56 @@
         </div>
       </div>
     </el-dialog>
+
+    <!-- 添加课程文件弹窗 -->
+    <el-dialog v-model="addLessonDialogVisible" title="添加课程文件" width="40%">
+      <el-form :model="newLesson" label-width="100px">
+        <el-form-item label="课号">
+          <el-input v-model="courseId" disabled />
+        </el-form-item>
+        <el-form-item label="小课号">
+          <el-input v-model="newLesson.lessonId" placeholder="请输入小课号" />
+        </el-form-item>
+        <el-form-item label="小课标题">
+          <el-input v-model="newLesson.lesson_title" placeholder="请输入小课标题" />
+        </el-form-item>
+        <el-form-item label="小课简介">
+          <el-input
+            v-model="newLesson.lesson_description"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入小课简介"
+          />
+        </el-form-item>
+        <el-form-item label="课程文件">
+          <el-upload
+            class="upload-demo"
+            action="http://localhost:8081/uploadFile"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :show-file-list="false"
+          >
+            <el-button type="primary">上传文件</el-button>
+          </el-upload>
+          <div v-if="uploadedFile" class="file-info">
+            <p>已上传文件：{{ uploadedFile.name }}</p>
+            <p>文件URL：{{ uploadedFile.url }}</p>
+          </div>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="addLessonDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitLesson">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'CourseDetail',
   data() {
@@ -205,8 +252,20 @@ export default {
         }
       ],
       showVideoPlayer: false,
-      currentVideoUrl: ''
+      currentVideoUrl: '',
+      addLessonDialogVisible: false,
+      newLesson: {
+        lessonId: '',
+        lesson_title: '',
+        lesson_description: '',
+        fileUrl: ''
+      },
+      uploadedFile: null,
+      courseTitle: this.$route.query.title
     }
+  },
+  created() {
+    document.title = `${this.courseTitle} - 课程详情`
   },
   methods: {
     openVideo(video) {
@@ -257,6 +316,71 @@ export default {
       this.currentVideoUrl = '';
       if (this.$refs.videoPlayer) {
         this.$refs.videoPlayer.pause();
+      }
+    },
+    showAddLessonDialog() {
+      this.addLessonDialogVisible = true
+      this.newLesson = {
+        lessonId: '',
+        lesson_title: '',
+        lesson_description: '',
+        fileUrl: ''
+      }
+      this.uploadedFile = null
+    },
+    
+    handleUploadSuccess(response) {
+      if (response.code === 200) {
+        this.uploadedFile = {
+          name: response.data.fileName,
+          url: response.data.fileUrl
+        }
+        this.newLesson.fileUrl = response.data.fileUrl
+      }
+    },
+    
+    handleUploadError() {
+      // 静默处理错误
+    },
+    
+    async submitLesson() {
+      try {
+        // 检查必填字段
+        if (!this.newLesson.lessonId || !this.newLesson.lesson_title || !this.newLesson.lesson_description||!this.newLesson.fileUrl) {
+          this.$message.error('请填写完整信息')
+          return
+        }
+
+        // 构造请求数据
+        const lessonData = {
+          courseId: parseInt(this.$route.params.courseId), // 确保是数字类型
+          lessonId: parseInt(this.newLesson.lessonId),
+          title: this.newLesson.lesson_title,
+          videoUrl: this.newLesson.fileUrl, // 如果没有上传文件，使用默认URL
+          description: this.newLesson.lesson_description
+        }
+
+        // 发送请求
+        const response = await axios.post('http://localhost:8081/course-lessons', lessonData)
+
+        if (response.data && response.data.code === 201) {
+          // 关闭弹窗
+          this.addLessonDialogVisible = false
+          
+          // 重置表单
+          this.newLesson = {
+            lessonId: '',
+            lesson_title: '',
+            lesson_description: '',
+            fileUrl: ''
+          }
+          this.uploadedFile = null
+          
+          // 重新加载课程列表（如果需要）
+          // this.loadLessons()
+        }
+      } catch {
+        // 静默处理错误
       }
     }
   }
@@ -479,5 +603,18 @@ h1 {
 
 .view-comments-btn:hover {
   color: #66b1ff;
+}
+
+.file-info {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+}
+
+.file-info p {
+  margin: 5px 0;
+  word-break: break-all;
+  color: #666;
 }
 </style> 
