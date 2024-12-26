@@ -33,8 +33,12 @@
         </el-button>
       </div>
       <div class="header-right">
-        <el-button type="primary" @click="showLoginDialog = true">登录</el-button>
-        <span class="user-info" v-if="isLoggedIn">xxxxxxx XXX</span>
+        <template v-if="!isLoggedIn">
+          <el-button type="primary" @click="showLoginDialog = true">登录</el-button>
+        </template>
+        <template v-else>
+          <span class="user-info">张老师</span>
+        </template>
       </div>
     </header>
 
@@ -66,7 +70,7 @@ export default {
       showLearningMenu: false,
       showAdviceMenu: false,
       showLoginDialog: false,
-      isLoggedIn: false,
+      isLoggedIn: true,
       loginForm: {
         username: '',
         password: ''

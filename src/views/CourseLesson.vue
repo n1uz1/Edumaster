@@ -5,7 +5,7 @@
         <el-button @click="$router.back()">返回</el-button>
         <h1>{{ courseTitle }}</h1>
       </div>
-      <div class="user-info">xxxxxxx XXX</div>
+      <div class="user-info">张老师</div>
     </header>
 
     <div class="lesson-content">
@@ -311,11 +311,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  background-color: #fff;
-  padding: 15px 20px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px 20px;
 }
 
 .header-left {
@@ -532,5 +528,10 @@ export default {
 .material-video {
   width: 100%;
   max-height: 500px;
+}
+
+.user-info {
+  font-size: 14px;
+  color: #333;
 }
 </style> 

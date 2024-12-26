@@ -3,11 +3,11 @@
     <header class="header">
       <h1>课程详情</h1>
       <el-button @click="$router.push('/course-management')">返回</el-button>
-      <div class="user-info">xxxxxxx XXX</div>
+      <div class="user-info">张老师</div>
     </header>
 
     <div class="course-content">
-      <h2 class="course-title">{{ course.name }}</h2>
+      <h2 class="course-title">舞蹈基础课</h2>
       <div class="course-image">
       </div>
       <div class="course-intro">一个舞蹈的基本课程</div>
@@ -193,15 +193,15 @@ export default {
       comments: [
         {
           id: 1,
-          username: '学习者A',
+          username: 'A',
           content: '这节课讲得很清楚！',
-          date: '2024-03-15 14:30'
+          date: '2024-03-15 14:57'
         },
         {
           id: 2,
-          username: '学习者B',
+          username: 'B',
           content: '有些概念需要多加练习。',
-          date: '2024-03-15 15:00'
+          date: '2024-03-15 15:06'
         }
       ],
       showVideoPlayer: false,
@@ -240,7 +240,7 @@ export default {
       if (this.newComment.trim()) {
         this.comments.unshift({
           id: Date.now(),
-          username: '当前用户',
+          username: '张老师',
           content: this.newComment,
           date: new Date().toLocaleString()
         })
@@ -271,13 +271,26 @@ export default {
 }
 
 .header {
-  background-color: #e3f2fd;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 15px 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 15px 30px;
+  background-color: #e6f0fa;
+  height: 60px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #d9e6f2;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.user-info {
+  font-size: 16px;
+  color: #333;
 }
 
 .course-content {

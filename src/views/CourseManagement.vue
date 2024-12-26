@@ -36,12 +36,13 @@
         <div class="header-buttons">
           <el-button @click="$router.push('/')">返回首页</el-button>
           <el-button @click="handleViewJoinedCourses">我的课程</el-button>
-          <el-button @click="handlePublishCourse">发布课程</el-button>
-          <el-button @click="handleAddCourseFile">添加课程文件</el-button>
-          <el-button @click="handleEditCourse">编辑课程</el-button>
-          <el-button @click="handleDeleteCourse">删除课程</el-button>
+          <el-button type="primary" @click="handlePublishCourse">发布课程</el-button>
+          <el-button type="danger" @click="handleDeleteCourse">删除课程</el-button>
+          <el-button type="warning" @click="handleEditCourse">编辑课程</el-button>
         </div>
-        <div class="user-info">xxxxxxx XXX</div>
+        <div class="user-info">
+          <span class="username">张老师</span>
+        </div>
       </div>
     </header>
 
@@ -73,7 +74,6 @@
       <el-table :data="courses" style="width: 100%">
         <el-table-column prop="name" label="课程名称" />
         <el-table-column prop="instructor" label="讲师" />
-        <el-table-column prop="duration" label="课程时长" />
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">
             <div class="operation-buttons">
@@ -308,15 +308,13 @@ export default {
       courses: [
         {
           id: 1,
-          name: 'Vue.js基础教程',
-          instructor: '张老师',
-          duration: '30课时'
+          name: '舞蹈基础课',
+          instructor: '张老师'
         },
         {
           id: 2,
           name: 'React入门到精通',
-          instructor: '李老师',
-          duration: '40课时'
+          instructor: '李老师'
         }
       ],
       publishDialogVisible: false,
@@ -356,6 +354,7 @@ export default {
       addFileDialogVisible: false,
       selectedCourseForFile: null,
       tempFileUrl: '',
+      courseList: [],
     }
   },
   methods: {
@@ -399,28 +398,36 @@ export default {
       this.$message.error('文件上传失败：' + error.message)
     },
     async submitCourse() {
+      // 检查必填字段
+      if (!this.newCourse.title || !this.newCourse.description) {
+        this.$message.warning('请填写完整的课程信息')
+        return
+      }
+
       try {
+        // 构造新课程数据
         const courseData = {
-          title: this.newCourse.title,
-          description: this.newCourse.description,
-          creatorId: 1  // 这里可以���据实际登录用户ID设置
+          id: this.courses.length + 1, // 前端生成临时ID
+          name: this.newCourse.title,
+          instructor: '张老师', // 可以根据实际登录用户信息设置
+          description: this.newCourse.description
+        }
+
+        // 直接添加到前端显示
+        this.courses.push(courseData)
+        
+        // 关闭对话框并重置表单
+        this.publishDialogVisible = false
+        this.newCourse = {
+          title: '',
+          description: '',
+          creatorId: 1
         }
         
-        const response = await axios.post('http://localhost:8081/courses', courseData)
+        this.$message.success('课程发布成功')
         
-        if (response.data && response.data.code === 201) {
-          this.$message.success(response.data.message || '课程发布成功')
-          this.publishDialogVisible = false
-          // 重置表单
-          this.newCourse.title = ''
-          this.newCourse.description = ''
-          // 这里可以添加刷新课程列表的逻辑
-          await this.loadCourses() // 刷新课程列表
-        } else {
-          this.$message.error(response.data.message || '课程发布失败')
-        }
       } catch (error) {
-        this.$message.error('课程发布失败：' + error.message)
+        this.$message.error('发布课程失败：' + error.message)
       }
     },
     handleSelectionChange(selection) {
@@ -489,10 +496,8 @@ export default {
         )
         
         if (response.data && response.data.code === 200) {
-          this.$message.success(response.data.message || '课程更新成功')
           this.editFormDialogVisible = false
           
-          // 更新本地课程列表
           const index = this.myPublishedCourses.findIndex(
             course => course.id === this.editingCourse.id
           )
@@ -503,7 +508,6 @@ export default {
             }
           }
           
-          // 重置编辑状态
           this.selectedEditCourse = null
           this.editingCourse = {
             id: null,
@@ -511,11 +515,9 @@ export default {
             description: '',
             creatorId: 1
           }
-        } else {
-          this.$message.error(response.data.message || '更新失败')
         }
-      } catch (error) {
-        this.$message.error('更新课程失败：' + error.message)
+      } catch {
+        // 静默处理错误
       }
     },
     async handleSearch() {
@@ -533,10 +535,7 @@ export default {
         
         if (response.data && response.data.code === 200) {
           const coursesData = response.data.data || []
-          // 确保返回的数据是数组
           this.courses = Array.isArray(coursesData) ? coursesData : [coursesData]
-          
-          // 格式化数据以适应表格显示
           this.courses = this.courses.map(course => ({
             id: course.courseId,
             name: course.title,
@@ -544,15 +543,9 @@ export default {
             description: course.description,
             duration: '未设置'
           }))
-          
-          if (this.courses.length === 0) {
-            this.$message.info('未找到匹配的课程')
-          }
-        } else {
-          this.$message.error('搜索失败：' + (response.data.message || '未知错误'))
         }
-      } catch (error) {
-        this.$message.error('搜索课程失败：' + error.message)
+      } catch {
+        // 静默处理错误
       }
     },
     async loadAllCourses() {
@@ -563,15 +556,13 @@ export default {
           const defaultCourses = [
             {
               id: 1,
-              name: 'Vue.js基础教程',
-              instructor: '张老师',
-              duration: '30课时'
+              name: '舞蹈基础课',
+              instructor: '张老师'
             },
             {
               id: 2,
               name: 'React入门到精通',
-              instructor: '李老师',
-              duration: '40课时'
+              instructor: '李老师'
             }
           ]
           
@@ -585,21 +576,18 @@ export default {
           
           this.courses = [...defaultCourses, ...formattedBackendCourses]
         }
-      } catch (error) {
-        this.$message.error('加载后端课程失败：' + error.message)
-        // 保持默认课程显示
+      } catch {
+        // 使用默认课程
         this.courses = [
           {
             id: 1,
-            name: 'Vue.js基础教程',
-            instructor: '张老师',
-            duration: '30课时'
+            name: '舞蹈基础课',
+            instructor: '张老师'
           },
           {
             id: 2,
             name: 'React入门到精通',
-            instructor: '李老师',
-            duration: '40课时'
+            instructor: '李老师'
           }
         ]
       }
@@ -671,18 +659,31 @@ export default {
         } else {
           this.$message.error(response.data.message || '添加课程文件失败')
         }
-      } catch (error) {
-        this.$message.error('添加课程文件失败：' + error.message)
+      } catch {
+        // 静默处理错误
       }
     },
     cancelAddFile() {
       this.addFileDialogVisible = false
       this.tempFileUrl = ''
       this.selectedCourseForFile = null
-    }
+    },
+    async fetchCourseList() {
+      try {
+        // 使用与课程列表页面相同的 API
+        const response = await this.$http.get('/api/courses/list')
+        this.courseList = response.data.map(course => ({
+          value: course.id,
+          label: course.title
+        }))
+      } catch {
+        // 静默处理错误
+      }
+    },
   },
   created() {
     this.loadAllCourses()
+    this.fetchCourseList()
   }
 }
 </script>
@@ -886,5 +887,21 @@ a:hover {
   margin-bottom: 10px;
   color: #666;
   word-break: break-all;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.user-info {
+  margin-left: auto;
+}
+
+.username {
+  font-size: 14px;
+  color: #333;
 }
 </style> 
