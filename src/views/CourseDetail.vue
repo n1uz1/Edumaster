@@ -330,12 +330,12 @@ export default {
     },
     
     handleUploadSuccess(response) {
-      if (response.code === 200) {
+      if (response.message === "File uploaded successfully.") {
         this.uploadedFile = {
-          name: response.data.fileName,
-          url: response.data.fileUrl
+          name: response.url.split('/').pop(), // 从URL中提取文件名
+          url: response.url
         }
-        this.newLesson.fileUrl = response.data.fileUrl
+        this.newLesson.fileUrl = response.url
       }
     },
     
