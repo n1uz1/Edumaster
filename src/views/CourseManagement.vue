@@ -556,48 +556,53 @@ export default {
     async loadAllCourses() {
       try {
         const response = await axios.get('http://localhost:8081/courses')
-        if (response.data) {
-          // 定义默认课程，确保包含课号
+        if (response.data && response.data.code === 200) {
+          // 处理后端返回的课程数据
+          const backendCourses = response.data.data.map(course => ({
+            id: course.courseId,
+            courseId: course.courseId, // 直接使用数字作为课号
+            name: course.title,
+            instructor: course.creatorId,
+            description: course.description
+          }))
+          
+          // 添加两个假课
           const defaultCourses = [
             {
-              id: 1,
-              courseId: 'CS001',
+              id: 999,
+              courseId: 999,  // 直接使用数字
               name: '舞蹈基础课',
-              instructor: '张老师'
+              instructor: '张老师',
+              description: '舞蹈基础入门课程'
             },
             {
-              id: 2,
-              courseId: 'CS002',
+              id: 1000,
+              courseId: 1000,  // 直接使用数字
               name: 'React入门到精通',
-              instructor: '李老师'
+              instructor: '李老师',
+              description: 'React完整学习课程'
             }
           ]
           
-          const backendCourses = Array.isArray(response.data) ? response.data : [response.data]
-          const formattedBackendCourses = backendCourses.map(course => ({
-            id: course.courseId,
-            courseId: course.courseId || `CS${String(course.id).padStart(3, '0')}`, // 确保有课号
-            name: course.title,
-            instructor: course.creatorId || '未知',
-            description: course.description || '未设置'
-          }))
-          
-          this.courses = [...defaultCourses, ...formattedBackendCourses]
+          // 合并后端课程和假课
+          this.courses = [...backendCourses, ...defaultCourses]
         }
       } catch {
-        // 使用默认课程
+        // 发生错误时只显示假课
         this.courses = [
           {
-            id: 1,
-            courseId: 'CS001',
+            id: 999,
+            courseId: 999,  // 直接使用数字
             name: '舞蹈基础课',
-            instructor: '张老师'
+            instructor: '张老师',
+            description: '舞蹈基础入门课程'
           },
           {
-            id: 2,
-            courseId: 'CS002',
+            id: 1000,
+            courseId: 1000,  // 直接使用数字
             name: 'React入门到精通',
-            instructor: '李老师'
+            instructor: '李老师',
+            description: 'React完整学习课程'
           }
         ]
       }
