@@ -200,11 +200,15 @@
     <el-dialog v-model="detailDialogVisible" title="课程详情" width="40%">
       <div class="course-detail-content" v-if="currentCourseDetail">
         <div class="detail-item">
-          <label>课程名称：</label>
+          <label>课号：</label>
+          <span>{{ currentCourseDetail.courseId }}</span>
+        </div>
+        <div class="detail-item">
+          <label>课程标题：</label>
           <span>{{ currentCourseDetail.title }}</span>
         </div>
         <div class="detail-item">
-          <label>课程概要：</label>
+          <label>课程简介：</label>
           <p>{{ currentCourseDetail.description }}</p>
         </div>
       </div>
@@ -782,6 +786,23 @@ export default {
         this.$message.error('删除课程失败：' + error.message)
       }
     },
+    async handleViewDetail(course) {
+      try {
+        const response = await axios.get(`http://localhost:8081/courses/${course.courseId}`)
+        if (response.data && response.data.code === 200) {
+          const courseData = response.data.data
+          this.currentCourseDetail = {
+            courseId: courseData.courseId,
+            title: courseData.title,
+            description: courseData.description,
+            creatorId: courseData.creatorId,
+          }
+          this.detailDialogVisible = true
+        }
+      } catch {
+        // 静默处理错误
+      }
+    }
   },
   created() {
     this.loadAllCourses()
@@ -939,19 +960,17 @@ a:hover {
 }
 
 .detail-item {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .detail-item label {
   font-weight: bold;
-  color: #606266;
   margin-right: 10px;
 }
 
 .detail-item p {
-  margin: 10px 0 0 0;
-  color: #333;
-  line-height: 1.6;
+  margin: 5px 0;
+  white-space: pre-wrap;
 }
 
 .joined-courses-content {
