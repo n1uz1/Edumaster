@@ -143,7 +143,7 @@
     <el-dialog v-model="addLessonDialogVisible" title="添加课程文件" width="40%">
       <el-form :model="newLesson" label-width="100px">
         <el-form-item label="课号">
-          <el-input v-model="courseId" disabled />
+          <el-input v-model="$route.query.courseId" :disabled="true" />
         </el-form-item>
         <el-form-item label="小课号">
           <el-input v-model="newLesson.lessonId" placeholder="请输入小课号" />
@@ -353,7 +353,7 @@ export default {
 
         // 构造请求数据
         const lessonData = {
-          courseId: parseInt(this.$route.params.courseId), // 确保是数字类型
+          courseId: parseInt(this.$route.query.courseId), // 确保是数字类型
           lessonId: parseInt(this.newLesson.lessonId),
           title: this.newLesson.lesson_title,
           videoUrl: this.newLesson.fileUrl, // 如果没有上传文件，使用默认URL
