@@ -9,26 +9,83 @@
     <div class="course-content">
       <h2 class="course-title">{{ course.name }}</h2>
       <div class="course-image">
-        <img :src="course.image" :alt="course.name">
       </div>
-      <div class="course-intro">{{ course.introduction }}</div>
+      <div class="course-intro">一个舞蹈的基本课程</div>
 
       <div class="video-section">
-        <h3>课程视频</h3>
+        <h2>课程视频</h2>
         <div class="video-list">
-          <div v-for="video in course.videos" :key="video.id" class="video-item">
-            <div class="video-content" @click="openVideo(video)">
-              <img :src="video.thumbnail" :alt="video.title">
-              <div class="video-info">
-                <h4>{{ video.title }}</h4>
-                <p>{{ video.duration }}</p>
+          <!-- 第一个视频 -->
+          <div class="video-item" @click="playVideo('https://edumaster.oss-cn-beijing.aliyuncs.com/WeChat_20241226021016.mp4')">
+            <div class="video-thumbnail">
+              <div class="thumbnail-bg"></div>
+              <div class="play-icon">
+                <i class="el-icon-video-play"></i>
               </div>
             </div>
-            <div class="video-actions">
-              <el-button type="text" @click="viewComments(video)">
-                查看评论 ({{ video.commentCount || 0 }})
+            <div class="video-info">
+              <h3>第一讲：课程介绍</h3>
+              <div class="video-actions">
+                <el-button 
+                  type="text" 
+                  class="view-comments-btn"
+                  @click.stop="viewComments({
+                    title: '第一讲：课程介绍',
+                    type: 'video'
+                  })"
+                >
+                  查看评论
+                </el-button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第二个视频 -->
+          <div class="video-item" @click="playVideo('https://edumaster.oss-cn-beijing.aliyuncs.com/WeChat_20241226021016.mp4')">
+            <div class="video-thumbnail">
+              <div class="thumbnail-bg"></div>
+              <div class="play-icon">
+                <i class="el-icon-video-play"></i>
+              </div>
+            </div>
+            <div class="video-info">
+              <h3>第二讲：基础动作</h3>
+              <div class="video-actions">
+                <el-button 
+                  type="text" 
+                  class="view-comments-btn"
+                  @click.stop="viewComments({
+                    title: '第二讲：基础动作',
+                    type: 'video'
+                  })"
+                >
+                  查看评论
+                </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 视频播放器 -->
+        <div v-if="showVideoPlayer" class="video-player-modal">
+          <div class="video-player-container">
+            <div class="close-button-wrapper">
+              <el-button
+                class="close-button"
+                type="danger"
+                circle
+                @click="closeVideo"
+              >
+                <i class="el-icon-close"></i>
               </el-button>
             </div>
+            <video 
+              ref="videoPlayer"
+              :src="currentVideoUrl"
+              controls
+              autoplay
+              class="video-player"
+            ></video>
           </div>
         </div>
       </div>
@@ -42,7 +99,7 @@
             </div>
             <div class="document-actions">
               <el-button type="text" @click="viewComments(doc)">
-                查看评论 ({{ doc.commentCount || 0 }})
+                查看评论 
               </el-button>
             </div>
           </div>
@@ -146,7 +203,9 @@ export default {
           content: '有些概念需要多加练习。',
           date: '2024-03-15 15:00'
         }
-      ]
+      ],
+      showVideoPlayer: false,
+      currentVideoUrl: ''
     }
   },
   methods: {
@@ -187,6 +246,17 @@ export default {
         })
         this.newComment = ''
         this.$message.success('评论发布成功')
+      }
+    },
+    playVideo(url) {
+      this.currentVideoUrl = url;
+      this.showVideoPlayer = true;
+    },
+    closeVideo() {
+      this.showVideoPlayer = false;
+      this.currentVideoUrl = '';
+      if (this.$refs.videoPlayer) {
+        this.$refs.videoPlayer.pause();
       }
     }
   }
@@ -286,5 +356,115 @@ export default {
   color: #999;
   display: block;
   margin-top: 5px;
+}
+
+.video-section {
+  padding: 20px;
+}
+
+.video-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.video-item {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.video-item:hover {
+  transform: translateY(-5px);
+}
+
+.video-thumbnail {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 比例 */
+  background: #f5f5f5;
+}
+
+.thumbnail-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+}
+
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 48px;
+  opacity: 0.8;
+}
+
+.video-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.video-info h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.video-player-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.video-player-container {
+  position: relative;
+  width: 80%;
+  max-width: 1200px;
+  padding-top: 40px;  /* 为关闭按钮留出空间 */
+}
+
+.close-button-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1001;
+}
+
+.video-player {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.close-button {
+}
+
+.video-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 5px;
+}
+
+.view-comments-btn {
+  color: #409EFF;
+  padding: 0;
+}
+
+.view-comments-btn:hover {
+  color: #66b1ff;
 }
 </style> 

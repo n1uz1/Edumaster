@@ -5,20 +5,6 @@
         <el-button @click="$router.back()">返回</el-button>
         <h1>{{ courseTitle }}</h1>
       </div>
-      <div class="header-center">
-        <el-button 
-          class="menu-button"
-          @mouseenter="showAdviceMenu = true"
-          @mouseleave="showAdviceMenu = false"
-        >
-          学习建议
-          <div class="sub-menu" v-show="showAdviceMenu">
-            <router-link to="/course-recommendation">用户课程推荐</router-link>
-            <router-link to="/learning-path">学习路径建议</router-link>
-            <router-link to="/learning-forum">学习论坛</router-link>
-          </div>
-        </el-button>
-      </div>
       <div class="user-info">xxxxxxx XXX</div>
     </header>
 
@@ -33,6 +19,41 @@
         <div class="lesson-info">
           <h2>{{ currentLesson.title }}</h2>
           <p>{{ currentLesson.description }}</p>
+        </div>
+
+        <div class="course-files">
+          <div class="files-header">
+            <h3>课程资料</h3>
+            <el-button 
+              type="danger" 
+              size="small" 
+              @click="showDeleteFileDialog"
+            >
+              删除文件
+            </el-button>
+          </div>
+          <div v-if="courseFiles.length > 0" class="files-list">
+            <el-card v-for="file in courseFiles" :key="file.fileId" class="file-item">
+              <div class="file-info">
+                <div class="file-name">
+                  <i class="el-icon-document"></i>
+                  <span>{{ file.fileName }}</span>
+                </div>
+                <div class="file-actions">
+                  <el-button 
+                    type="primary" 
+                    size="small"
+                    @click="downloadFile(file.fileUrl)"
+                  >
+                    下载
+                  </el-button>
+                </div>
+              </div>
+            </el-card>
+          </div>
+          <div v-else class="no-files">
+            暂无课程资料
+          </div>
         </div>
 
         <div class="comments-section">
@@ -71,41 +92,6 @@
         </div>
       </div>
 
-      <div class="course-files">
-        <div class="files-header">
-          <h3>课程资料</h3>
-          <el-button 
-            type="danger" 
-            size="small" 
-            @click="showDeleteFileDialog"
-          >
-            删除文件
-          </el-button>
-        </div>
-        <div v-if="courseFiles.length > 0" class="files-list">
-          <el-card v-for="file in courseFiles" :key="file.fileId" class="file-item">
-            <div class="file-info">
-              <div class="file-name">
-                <i class="el-icon-document"></i>
-                <span>{{ file.fileName }}</span>
-              </div>
-              <div class="file-actions">
-                <el-button 
-                  type="primary" 
-                  size="small"
-                  @click="downloadFile(file.fileUrl)"
-                >
-                  下载
-                </el-button>
-              </div>
-            </div>
-          </el-card>
-        </div>
-        <div v-else class="no-files">
-          暂无课程��料
-        </div>
-      </div>
-
       <div class="lessons-list">
         <h3>课程目录</h3>
         <el-menu
@@ -122,6 +108,28 @@
           </el-menu-item>
         </el-menu>
       </div>
+    </div>
+
+    <div class="course-materials">
+      <div class="material-item" @click="playVideoMaterial">
+        <i class="el-icon-video-camera"></i>
+        <span class="material-name">课程视频</span>
+      </div>
+      
+      <!-- 视频播放对话框 -->
+      <el-dialog
+        title="课程视频"
+        v-model="videoDialogVisible"
+        width="50%"
+        @close="handleCloseVideo"
+      >
+        <video 
+          ref="materialVideo"
+          src="https://edumaster.oss-cn-beijing.aliyuncs.com/WeChat_20241226021016.mp4"
+          controls
+          class="material-video"
+        ></video>
+      </el-dialog>
     </div>
 
     <el-dialog v-model="deleteFileDialogVisible" title="删除课程文件" width="40%">
@@ -159,14 +167,13 @@ export default {
   name: 'CourseLesson',
   data() {
     return {
-      showLearningMenu: false,
-      showAdviceMenu: false,
       courseTitle: '',
       currentLesson: null,
       comments: [],
       courseFiles: [],
       deleteFileDialogVisible: false,
-      selectedFile: null
+      selectedFile: null,
+      videoDialogVisible: false
     }
   },
   async created() {
@@ -271,6 +278,16 @@ export default {
       } catch (error) {
         this.$message.error('删除文件失败：' + error.message)
       }
+    },
+    playVideoMaterial() {
+      this.videoDialogVisible = true;
+    },
+    
+    handleCloseVideo() {
+      // 关闭对话框时暂停视频
+      if (this.$refs.materialVideo) {
+        this.$refs.materialVideo.pause();
+      }
     }
   },
   watch: {
@@ -286,6 +303,8 @@ export default {
 <style scoped>
 .course-lesson {
   padding: 20px;
+  background-color: #e8f5e9;
+  min-height: 100vh;
 }
 
 .header {
@@ -293,6 +312,10 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  background-color: #fff;
+  padding: 15px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .header-left {
@@ -342,25 +365,36 @@ export default {
 }
 
 .course-files {
-  margin-top: 30px;
+  margin: 30px 0;
   padding: 20px;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
 }
 
 .files-list {
   margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
 }
 
 .file-item {
-  margin-bottom: 10px;
+  margin: 0;
+  transition: all 0.3s;
+}
+
+.file-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .file-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
 }
 
 .file-name {
@@ -471,30 +505,32 @@ export default {
   color: #666;
 }
 
-.header-center {
+.course-materials {
+  margin: 20px 0;
+}
+
+.material-item {
   display: flex;
-  gap: 20px;
-}
-
-.menu-button {
-  position: relative;
-  height: 40px;
-}
-
-.sub-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  align-items: center;
+  cursor: pointer;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1000;
-  min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-top: 5px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.material-item:hover {
+  background-color: #f5f7fa;
+}
+
+.material-item i {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #409EFF;
+}
+
+.material-video {
+  width: 100%;
+  max-height: 500px;
 }
 </style> 

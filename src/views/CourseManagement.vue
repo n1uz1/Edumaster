@@ -78,7 +78,7 @@
           <template #default="scope">
             <div class="operation-buttons">
               <el-button
-                @click="viewCourseDetail(scope.row.id)"
+                @click="viewCourseDetail(scope.row)"
                 type="text"
                 size="small"
               >
@@ -87,7 +87,10 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="goToCourseDetail(scope.row.id)"
+                @click="$router.push({
+                  path: `/course-detail/${scope.row.id}`,
+                  query: { videoUrl: scope.row.videoUrl }
+                })"
               >
                 进入课程
               </el-button>
@@ -227,7 +230,7 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="goToCourseDetail(scope.row.id)"
+                @click="$router.push(`/course-detail/${scope.row.id}`)"
               >
                 进入课程
               </el-button>
@@ -362,9 +365,9 @@ export default {
     handleDeleteCourse() {
       this.deleteDialogVisible = true
     },
-    async viewCourseDetail(id) {
+    async viewCourseDetail(course) {
       try {
-        const response = await axios.get(`http://localhost:8081/courses/${id}`)
+        const response = await axios.get(`http://localhost:8081/courses/${course.id}`)
         if (response.data && response.data.code === 200) {
           const courseData = response.data.data
           this.currentCourseDetail = {
@@ -380,9 +383,6 @@ export default {
       } catch (error) {
         this.$message.error('获取课程详情失败：' + error.message)
       }
-    },
-    goToCourseDetail(courseId) {
-      this.$router.push(`/course/${courseId}/lesson/1`)
     },
     handlePageChange(page) {
       this.currentPage = page
@@ -403,7 +403,7 @@ export default {
         const courseData = {
           title: this.newCourse.title,
           description: this.newCourse.description,
-          creatorId: 1  // 这里可以根据实际登录用户ID设置
+          creatorId: 1  // 这里可以���据实际登录用户ID设置
         }
         
         const response = await axios.post('http://localhost:8081/courses', courseData)
@@ -577,10 +577,10 @@ export default {
           
           const backendCourses = Array.isArray(response.data) ? response.data : [response.data]
           const formattedBackendCourses = backendCourses.map(course => ({
-            id: course.id,
+            id: course.courseId,
             name: course.title,
-            instructor: course.instructor || '未知',
-            duration: course.duration || '未设置'
+            instructor: course.creatorId || '未知',
+            description: course.description || '未设置'
           }))
           
           this.courses = [...defaultCourses, ...formattedBackendCourses]
@@ -655,7 +655,7 @@ export default {
       try {
         const lessonData = {
           courseId: this.selectedCourseForFile.id,
-          lessonId: 101, // 这里可以根据需要生成或获取
+          lessonId: 101, // 这里可以根据要生成或获取
           title: `${this.selectedCourseForFile.title} `,
           videoUrl: this.tempFileUrl.url || this.tempFileUrl, // 兼容新旧格式
           description: `${this.selectedCourseForFile.title} `
