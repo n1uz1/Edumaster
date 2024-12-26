@@ -36,12 +36,12 @@
         <div class="header-buttons">
           <el-button @click="$router.push('/')">返回首页</el-button>
           <el-button @click="handleViewJoinedCourses">我的课程</el-button>
-          <el-button type="primary" @click="handlePublishCourse">发布课程</el-button>
+          <el-button type="primary" @click="handlePublishCourse">创建课程</el-button>
           <el-button type="danger" @click="handleDeleteCourse">删除课程</el-button>
           <el-button type="warning" @click="handleEditCourse">编辑课程</el-button>
         </div>
         <div class="user-info">
-          <span class="username">张老师</span>
+          <span class="username" ref="username">张老师</span>
         </div>
       </div>
     </header>
@@ -72,6 +72,7 @@
 
     <div class="course-list">
       <el-table :data="courses" style="width: 100%">
+        <el-table-column prop="courseId" label="课号" width="100" />
         <el-table-column prop="name" label="课程名称" />
         <el-table-column prop="instructor" label="讲师" />
         <el-table-column fixed="right" label="操作" width="200">
@@ -108,8 +109,8 @@
       />
     </div>
 
-    <!-- 发布课程窗 -->
-    <el-dialog v-model="publishDialogVisible" title="发布课程" width="40%">
+    <!-- 创建课程窗 -->
+    <el-dialog v-model="publishDialogVisible" title="创建课程" width="40%">
       <el-form :model="newCourse" label-width="100px">
         <el-form-item label="课程名称">
           <el-input v-model="newCourse.title" placeholder="请输入课程名称"/>
@@ -308,11 +309,13 @@ export default {
       courses: [
         {
           id: 1,
+          courseId: 'CS001',
           name: '舞蹈基础课',
           instructor: '张老师'
         },
         {
           id: 2,
+          courseId: 'CS002',
           name: 'React入门到精通',
           instructor: '李老师'
         }
@@ -400,34 +403,36 @@ export default {
     async submitCourse() {
       // 检查必填字段
       if (!this.newCourse.title || !this.newCourse.description) {
-        this.$message.warning('请填写完整的课程信息')
         return
       }
 
       try {
-        // 构造新课程数据
         const courseData = {
-          id: this.courses.length + 1, // 前端生成临时ID
-          name: this.newCourse.title,
-          instructor: '张老师', // 可以根据实际登录用户信息设置
-          description: this.newCourse.description
+          title: this.newCourse.title,
+          description: this.newCourse.description,
+          creatorId: this.$refs.username.textContent  // 使用username组件的内容
         }
 
-        // 直接添加到前端显示
-        this.courses.push(courseData)
+        const response = await axios.post('http://localhost:8081/courses', courseData)
         
-        // 关闭对话框并重置表单
-        this.publishDialogVisible = false
-        this.newCourse = {
-          title: '',
-          description: '',
-          creatorId: 1
+        if (response.data && response.data.code === 201) {  // 检查返回码为201
+          // 获取返回的课程ID
+          const courseId = response.data.courseId
+          
+          // 关闭对话框并重置表单
+          this.publishDialogVisible = false
+          this.newCourse = {
+            title: '',
+            description: '',
+            creatorId: this.$refs.username.textContent,
+            courseId: courseId,
+          }
+          
+          // 重新加载课程列表
+          this.loadAllCourses()
         }
-        
-        this.$message.success('课程发布成功')
-        
-      } catch (error) {
-        this.$message.error('发布课程失败：' + error.message)
+      } catch {
+        // 静默处理错误
       }
     },
     handleSelectionChange(selection) {
@@ -552,15 +557,17 @@ export default {
       try {
         const response = await axios.get('http://localhost:8081/courses')
         if (response.data) {
-          // 合并默认课程和后端返回的课程
+          // 定义默认课程，确保包含课号
           const defaultCourses = [
             {
               id: 1,
+              courseId: 'CS001',
               name: '舞蹈基础课',
               instructor: '张老师'
             },
             {
               id: 2,
+              courseId: 'CS002',
               name: 'React入门到精通',
               instructor: '李老师'
             }
@@ -569,6 +576,7 @@ export default {
           const backendCourses = Array.isArray(response.data) ? response.data : [response.data]
           const formattedBackendCourses = backendCourses.map(course => ({
             id: course.courseId,
+            courseId: course.courseId || `CS${String(course.id).padStart(3, '0')}`, // 确保有课号
             name: course.title,
             instructor: course.creatorId || '未知',
             description: course.description || '未设置'
@@ -581,11 +589,13 @@ export default {
         this.courses = [
           {
             id: 1,
+            courseId: 'CS001',
             name: '舞蹈基础课',
             instructor: '张老师'
           },
           {
             id: 2,
+            courseId: 'CS002',
             name: 'React入门到精通',
             instructor: '李老师'
           }
