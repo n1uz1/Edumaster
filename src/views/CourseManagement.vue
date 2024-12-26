@@ -376,7 +376,7 @@ export default {
             courseId: courseData.courseId,
             title: courseData.title,
             description: courseData.description,
-            creatorId: courseData.creatorId
+            creatorId: 1
           }
           this.detailDialogVisible = true
         } else {
@@ -410,7 +410,8 @@ export default {
         const courseData = {
           title: this.newCourse.title,
           description: this.newCourse.description,
-          creatorId: this.$refs.username.textContent  // 使用username组件的内容
+          //creatorId: this.$refs.username.textContent  // 使用username组件的内容
+          creatorId: 1 
         }
 
         const response = await axios.post('http://localhost:8081/courses', courseData)
@@ -424,7 +425,8 @@ export default {
           this.newCourse = {
             title: '',
             description: '',
-            creatorId: this.$refs.username.textContent,
+            //creatorId: this.$refs.username.textContent,
+            creatorId: 1,
             courseId: courseId,
           }
           
@@ -483,7 +485,8 @@ export default {
           id: this.selectedEditCourse.id,
           title: this.selectedEditCourse.title,
           description: this.selectedEditCourse.description,
-          creatorId: this.selectedEditCourse.creatorId || 1
+          //creatorId: this.selectedEditCourse.creatorId || 1
+          creatorId: 1
         }
         this.editSelectDialogVisible = false
         this.editFormDialogVisible = true
@@ -496,7 +499,8 @@ export default {
           {
             title: this.editingCourse.title,
             description: this.editingCourse.description,
-            creatorId: this.editingCourse.creatorId
+            //creatorId: this.editingCourse.creatorId
+            creatorId: 1
           }
         )
         
@@ -544,7 +548,7 @@ export default {
           this.courses = this.courses.map(course => ({
             id: course.courseId,
             name: course.title,
-            instructor: course.creatorId,
+            instructor: course.username,
             description: course.description,
             duration: '未设置'
           }))
@@ -559,10 +563,10 @@ export default {
         if (response.data && response.data.code === 200) {
           // 处理后端返回的课程数据
           const backendCourses = response.data.data.map(course => ({
-            id: course.courseId,
-            courseId: course.courseId, // 直接使用数字作为课号
+            id: course.course_id,
+            courseId: course.course_id, // 直接使用数字作为课号
             name: course.title,
-            instructor: course.creatorId,
+            instructor: course.username,
             description: course.description
           }))
           
@@ -619,7 +623,7 @@ export default {
             id: course.courseId,
             title: course.title,
             description: course.description,
-            instructor: course.creatorId
+            instructor: course.username
           }))
           
           this.joinedCoursesDialogVisible = true
