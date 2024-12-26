@@ -546,11 +546,11 @@ export default {
           const coursesData = response.data.data || []
           this.courses = Array.isArray(coursesData) ? coursesData : [coursesData]
           this.courses = this.courses.map(course => ({
+            courseId: course.course_id,
             name: course.title,
+            description: course.description, 
+            creatorId: 1,//先写死
             instructor: course.username,
-            description: course.description,
-            courseId: course.courseId,
-            creatorId: 1//先写死
           }))
         }
       } catch {
@@ -563,7 +563,6 @@ export default {
         if (response.data && response.data.code === 200) {
           // 处理后端返回的课程数据
           const backendCourses = response.data.data.map(course => ({
-            id: course.course_id,
             courseId: course.course_id, // 直接使用数字作为课号
             name: course.title,
             instructor: course.username,
