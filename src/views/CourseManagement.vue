@@ -86,14 +86,18 @@
                 查看详情
               </el-button>
               <el-button
-                type="primary"
+                type="warning"
                 size="small"
-                @click="$router.push({
-                  path: `/course-detail/${scope.row.id}`,
-                  query: { videoUrl: scope.row.videoUrl }
-                })"
+                @click="handleEditCourse(scope.row)"
               >
-                进入课程
+                编辑
+              </el-button>
+              <el-button
+                type="danger"
+                size="small"
+                @click="handleDeleteCourse(scope.row)"
+              >
+                删除
               </el-button>
             </div>
           </template>
@@ -393,9 +397,6 @@ export default {
   methods: {
     handlePublishCourse() {
       this.publishDialogVisible = true
-    },
-    handleDeleteCourse() {
-      this.deleteDialogVisible = true
     },
     async viewCourseDetail(course) {
       try {
@@ -728,7 +729,43 @@ export default {
         // 静默处理错误
       }
     },
-    
+    async handleDeleteCourse(course) {
+      try {
+        const response = await axios.delete(`http://localhost:8081/courses/${course.courseId}`)
+        
+        if (response.data && response.data.code) {
+          switch (response.data.code) {
+            case 201:
+              // 从课程列表中移除已删除的课程
+              this.courses = this.courses.filter(item => item.courseId !== course.courseId)
+              
+              // 从我的课程列表中也移除
+              this.myPublishedCourses = this.myPublishedCourses.filter(
+                item => item.courseId !== course.courseId
+              )
+              
+              // 关闭删除确认对话框
+              this.deleteDialogVisible = false
+
+              this.$message.success(response.data.message) // "课程删除成功"
+              
+              break
+              
+            case 404:
+              // 课程未找到的处理
+              this.$message.error(response.data.message || '课程未找到')
+              break
+              
+            default:
+              this.$message.error(response.data.message || '删除失败')
+          }
+        } else {
+          this.$message.error('删除失败：服务器返回数据格式错误')
+        }
+      } catch (error) {
+        this.$message.error('删除课程失败：' + error.message)
+      }
+    },
   },
   created() {
     this.loadAllCourses()
