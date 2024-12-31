@@ -8,26 +8,26 @@
     </header>
 
     <div class="course-content">
-      <h2 class="course-title">{{ $route.query.title }}</h2>
+      <h2 class="course-title">{{ courseTitle }}</h2>
       <div class="course-image">
       </div>
       <div class="course-intro">{{ $route.query.description }}</div>
 
       <div class="video-section">
-  <h2>课程视频</h2>
-  <div class="video-list">
-    <div v-for="lesson in courseLessons" 
-         :key="lesson.courseLessonId" 
-         class="video-item" 
-         @click="playVideo(lesson.videoUrl)"
-    >
-      <div class="video-thumbnail">
-        <div class="thumbnail-bg"></div>
-        <div class="play-icon">
-          <i class="el-icon-video-play"></i>
+        <h2>课程视频</h2>
+        <div class="video-list">
+          <div v-for="lesson in courseLessons" 
+           :key="lesson.courseLessonId" 
+           class="video-item" 
+           @click="playVideo(lesson)"
+          >
+          <div class="video-thumbnail">
+            <div class="thumbnail-bg"></div>
+            <div class="play-icon">
+            <i class="el-icon-video-play"></i>
+          </div>
         </div>
-      </div>
-      <div class="video-info">
+        <div class="video-info">
         <h3>{{ lesson.title }}</h3>
         <div class="video-actions">
           <el-button 
@@ -69,54 +69,7 @@
           </div>
         </div>
       </div>
-
-      <div class="document-section">
-        <h3>课程文档</h3>
-        <div class="document-list">
-          <div v-for="doc in course.documents" :key="doc.id" class="document-item">
-            <div class="document-content" @click="openDocument(doc)">
-              <span>{{ doc.name }}</span>
-            </div>
-            <div class="document-actions">
-              <el-button type="text" @click="viewComments(doc)">
-                查看评论 
-              </el-button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <!-- 文件查看弹窗 -->
-    <el-dialog v-model="dialogVisible" :title="currentFile.title" width="70%">
-      <div class="file-content">
-        <div v-if="currentFile.type === 'video'" class="video-player">
-          <video controls :src="currentFile.url"></video>
-        </div>
-        <div v-else class="document-viewer">
-          <iframe :src="currentFile.url"></iframe>
-        </div>
-      </div>
-      <div v-if="showComments" class="comments-section">
-        <h4>评论区</h4>
-        <div class="comments-input">
-          <el-input
-            v-model="newComment"
-            type="textarea"
-            :rows="2"
-            placeholder="写下你的评论..."
-          />
-          <el-button type="primary" @click="submitComment">发表评论</el-button>
-        </div>
-        <div class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment-item">
-            <div class="comment-user">{{ comment.username }}</div>
-            <p>{{ comment.content }}</p>
-            <span>{{ comment.date }}</span>
-          </div>
-        </div>
-      </div>
-    </el-dialog>
 
     <!-- 添加课程文件弹窗 -->
     <el-dialog v-model="addLessonDialogVisible" title="添加课程文件" width="40%">
@@ -193,20 +146,6 @@ export default {
             url: '/video2.mp4'
           }
         ],
-        documents: [
-          {
-            id: 1,
-            name: '课程大纲.pdf',
-            commentCount: 2,
-            url: '/outline.pdf'
-          },
-          {
-            id: 2,
-            name: '练习题.pdf',
-            commentCount: 4,
-            url: '/exercises.pdf'
-          }
-        ]
       },
       dialogVisible: false,
       currentFile: {
@@ -246,6 +185,7 @@ export default {
   },
   
   created() {
+    this.courseTitle = this.$route.query.title
     this.loadCourseLessons()
   },
   
@@ -256,15 +196,7 @@ export default {
         type: 'video',
         url: video.url
       }
-      this.dialogVisible = true
-      this.showComments = false
-    },
-    openDocument(doc) {
-      this.currentFile = {
-        title: doc.name,
-        type: 'document',
-        url: doc.url
-      }
+      console.log(this.currentFile)
       this.dialogVisible = true
       this.showComments = false
     },
@@ -289,15 +221,19 @@ export default {
         this.$message.success('评论发布成功')
       }
     },
-    playVideo(url) {
-      this.currentVideoUrl = url;
-      this.showVideoPlayer = true;
+    playVideo(lesson) {
+      if (!lesson.videoUrl) {
+        this.$message.warning('视频链接不可用')
+        return
+      }
+      this.currentVideoUrl = lesson.videoUrl
+      this.showVideoPlayer = true
     },
     closeVideo() {
-      this.showVideoPlayer = false;
-      this.currentVideoUrl = '';
+      this.showVideoPlayer = false
+      this.currentVideoUrl = ''
       if (this.$refs.videoPlayer) {
-        this.$refs.videoPlayer.pause();
+        this.$refs.videoPlayer.pause()
       }
     },
     showAddLessonDialog() {
@@ -359,7 +295,7 @@ export default {
           this.uploadedFile = null
           
           // 重新加载课程列表（如果需要）
-          // this.loadLessons()
+           this.loadCourseLessons()
         }
       } catch {
         // 静默处理错误
@@ -369,7 +305,7 @@ export default {
       try {
         const courseId = this.$route.query.courseId
         const response = await axios.get(`http://localhost:8081/course-lessons/course/${courseId}`)
-        
+        console.log(response.data)
         if (response.data && response.data.code === 200) {
           // 处理返回的课程列表数据
           this.courseLessons = response.data.data.map(lesson => ({
@@ -381,6 +317,7 @@ export default {
             description: lesson.description
           }))
         }
+        console.log(this.courseLessons)
       } catch {
         // 静默处理错误
       }

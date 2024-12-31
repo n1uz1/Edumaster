@@ -13,10 +13,6 @@
           课程学习
           <div class="sub-menu" v-show="showLearningMenu">
             <router-link to="/course-management">课程管理</router-link>
-            <router-link to="/assignments">在线作业与考试</router-link>
-            <router-link to="/social-learning">社交学习</router-link>
-            <router-link to="/learning-report">生成学习报告</router-link>
-            <router-link to="/discussion">互动与讨论</router-link>
           </div>
         </el-button>
         <el-button 
@@ -27,7 +23,6 @@
           学习建议
           <div class="sub-menu" v-show="showAdviceMenu">
             <router-link to="/course-recommendation">用户课程推荐</router-link>
-            <router-link to="/learning-path">学习路径建议</router-link>
             <router-link to="/learning-forum">学习论坛</router-link>
           </div>
         </el-button>
@@ -81,7 +76,7 @@
               @click="$router.push({
                 path: `/course-detail/${scope.row.courseId}`,
                 query: {
-                  title: scope.row.title,
+                  title: scope.row.name,
                   creatorId: 1,
                   description: scope.row.description,
                   courseId:scope.row.courseId
@@ -347,20 +342,7 @@ export default {
       searchQuery: '',
       currentPage: 1,
       totalCourses: 100,
-      courses: [
-        {
-          id: 1,
-          courseId: 'CS001',
-          name: '舞蹈基础课',
-          instructor: '张老师'
-        },
-        {
-          id: 2,
-          courseId: 'CS002',
-          name: 'React入门到精通',
-          instructor: '李老师'
-        }
-      ],
+      courses: [],
       publishDialogVisible: false,
       newCourse: {
         title: '',
@@ -621,59 +603,26 @@ export default {
           // 处理后端返回的课程数据
           const backendCourses = response.data.data.map(course => ({
             courseId: course.course_id, // 直接使用数字作为课号
+            creatorId: course.creator_id, 
+            description: course.description,
             name: course.title,
             instructor: course.username,
-            description: course.description
           }))
           
-          // 添加两个假课
-          const defaultCourses = [
-            {
-              id: 999,
-              courseId: 999,  // 直接使用数字
-              name: '舞蹈基础课',
-              instructor: '张老师',
-              description: '舞蹈基础入门课程'
-            },
-            {
-              id: 1000,
-              courseId: 1000,  // 直接使用数字
-              name: 'React入门到精通',
-              instructor: '李老师',
-              description: 'React完整学习课程'
-            }
-          ]
-          
-          // 合并后端课程和假课
-          this.courses = [...backendCourses, ...defaultCourses]
+          this.courses = backendCourses
         }
-      } catch {
-        // 发生错误时只显示假课
-        this.courses = [
-          {
-            id: 999,
-            courseId: 999,  // 直接使用数字
-            name: '舞蹈基础课',
-            instructor: '张老师',
-            description: '舞蹈基础入门课程'
-          },
-          {
-            id: 1000,
-            courseId: 1000,  // 直接使用数字
-            name: 'React入门到精通',
-            instructor: '李老师',
-            description: 'React完整学习课程'
-          }
-        ]
+      } catch (error) {
+        this.$message.error('加载课程失败：' + error.message)
+        this.courses = []
       }
     },
     async handleViewJoinedCourses() {
       try {
         const response = await axios.get(`http://localhost:8081/users/1/courses`)
         if (response.data && response.data.code === 200) {
-          // 确保返回的数据是数组
+          // 确保返回的数据是List
           const coursesData = response.data.data || []
-          
+
           // 格式化课程数据
           this.joinedCourses = coursesData.map(course => ({
             courseId: course.courseId,

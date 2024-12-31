@@ -5,32 +5,29 @@
         <h1>首页</h1>
       </div>
       <div class="header-center">
-        <el-button 
-          class="menu-button" 
-          @mouseenter="showLearningMenu = true"
-          @mouseleave="showLearningMenu = false"
-        >
-          课程学习
-          <div class="sub-menu" v-show="showLearningMenu">
-            <router-link to="/course-management">课程管理</router-link>
-            <router-link to="/assignments">在线作业与考试</router-link>
-            <router-link to="/social-learning">社交学习</router-link>
-            <router-link to="/learning-report">生成学习报告</router-link>
-            <router-link to="/discussion">互动与讨论</router-link>
-          </div>
-        </el-button>
-        <el-button 
-          class="menu-button"
-          @mouseenter="showAdviceMenu = true"
-          @mouseleave="showAdviceMenu = false"
-        >
-          学习建议
-          <div class="sub-menu" v-show="showAdviceMenu">
-            <router-link to="/course-recommendation">用户课程推荐</router-link>
-            <router-link to="/learning-path">学习路径建议</router-link>
-            <router-link to="/learning-forum">学习论坛</router-link>
-          </div>
-        </el-button>
+        <div class="nav-buttons">
+          <el-button 
+            class="menu-button" 
+            @mouseenter="showLearningMenu = true"
+            @mouseleave="showLearningMenu = false"
+          >
+            课程学习
+            <div class="sub-menu" v-show="showLearningMenu">
+              <router-link to="/course-management">课程管理</router-link>
+            </div>
+          </el-button>
+          <el-button 
+            class="menu-button"
+            @mouseenter="showAdviceMenu = true"
+            @mouseleave="showAdviceMenu = false"
+          >
+            学习建议
+            <div class="sub-menu" v-show="showAdviceMenu">
+              <router-link to="/course-recommendation">用户课程推荐</router-link>
+              <router-link to="/learning-forum">学习论坛</router-link>
+            </div>
+          </el-button>
+        </div>
       </div>
       <div class="header-right">
         <template v-if="!isLoggedIn">
