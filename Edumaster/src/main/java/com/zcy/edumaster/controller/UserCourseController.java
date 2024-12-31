@@ -22,7 +22,6 @@ public class UserCourseController {
     @GetMapping("/{userId}/courses")
     public ResponseEntity<Map<String, Object>> getUserCourses(@PathVariable Long userId) {
         List<Course> courses = userCourseService.getCoursesByUserId(userId);
-
         // 创建返回的响应体
         Map<String, Object> response = new HashMap<>();
         if (courses.isEmpty()) {

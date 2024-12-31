@@ -21,6 +21,7 @@ public class fileUploadController {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
+        System.out.println("使用alioss上传");
         if (file == null || file.isEmpty()) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Please select a file to upload.");

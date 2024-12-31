@@ -15,5 +15,16 @@ public class Course {
     private String title;
     private String description;
     private Long creatorId;
+
+    // Getters 和 Setters
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
 }
 

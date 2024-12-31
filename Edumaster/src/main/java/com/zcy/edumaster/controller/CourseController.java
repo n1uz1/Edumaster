@@ -1,15 +1,24 @@
 package com.zcy.edumaster.controller;
 
-import com.zcy.edumaster.entity.Course;
-import com.zcy.edumaster.service.CourseService;
-import com.zcy.edumaster.common.ApiResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;  // 用于返回 ResponseEntity 对象
-import java.util.HashMap;  // 用于创建返回的 Map
-import java.util.Map;  // 用于创建返回的 Map
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;  // 用于返回 ResponseEntity 对象
+import org.springframework.web.bind.annotation.GetMapping;  // 用于创建返回的 Map
+import org.springframework.web.bind.annotation.PathVariable;  // 用于创建返回的 Map
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.zcy.edumaster.entity.Course;
+import com.zcy.edumaster.service.CourseService;
 
 @RestController
 @RequestMapping("/courses")
@@ -21,16 +30,17 @@ public class CourseController {
     // 创建课程
     @PostMapping(produces = "application/json")
     public ResponseEntity<Map<String, Object>> createCourse(@RequestBody Course course) {
-        boolean isSuccess = courseService.createCourse(course);
+        Long courseId = courseService.createCourse(course);
 
         // 创建返回的响应体
         Map<String, Object> response = new HashMap<>();
-        if (isSuccess) {
+        if (courseId != null) {
             response.put("code", HttpStatus.CREATED.value());
             response.put("message", "课程创建成功");
+            response.put("courseId", courseId);  // 返回课程ID
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
-            response.put("code", HttpStatus.NOT_FOUND.value());
+            response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.put("message", "课程创建失败");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -76,11 +86,10 @@ public class CourseController {
     // 根据 title 搜索课程
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchCourses(@RequestParam String title) {
-        List<Course> courses = courseService.searchCoursesByTitle(title);
 
         // 创建返回的响应体
         Map<String, Object> response = new HashMap<>();
-        if (courses.isEmpty()) {
+        if (courseService.searchCoursesByTitle(title).isEmpty()) {
             response.put("code", HttpStatus.NOT_FOUND.value());
             response.put("message", "未找到匹配的课程");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -88,7 +97,7 @@ public class CourseController {
 
         response.put("code", HttpStatus.OK.value());
         response.put("message", "搜索成功");
-        response.put("data", courses);  // 添加搜索到的课程数据
+        response.put("data", courseService.searchCoursesByTitle(title));  // 添加搜索到的课程数据
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -116,11 +125,10 @@ public class CourseController {
     // 获取所有课程
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllCourses() {
-        List<Course> courses = courseService.getAllCourses();
 
         // 创建返回的响应体
         Map<String, Object> response = new HashMap<>();
-        if (courses.isEmpty()) {
+        if (courseService.getAllCourses().isEmpty()) {
             response.put("code", HttpStatus.NOT_FOUND.value());
             response.put("message", "暂无课程数据");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -128,7 +136,7 @@ public class CourseController {
 
         response.put("code", HttpStatus.OK.value());
         response.put("message", "获取所有课程成功");
-        response.put("data", courses);
+        response.put("data", courseService.getAllCourses());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
