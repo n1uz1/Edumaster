@@ -7,25 +7,14 @@
       <div class="header-center">
         <div class="nav-buttons">
           <el-button 
-            class="menu-button" 
-            @mouseenter="showLearningMenu = true"
-            @mouseleave="showLearningMenu = false"
+            @click="$router.push('/course-management')"
           >
-            课程学习
-            <div class="sub-menu" v-show="showLearningMenu">
-              <router-link to="/course-management">课程管理</router-link>
-            </div>
+            课程管理
           </el-button>
           <el-button 
-            class="menu-button"
-            @mouseenter="showAdviceMenu = true"
-            @mouseleave="showAdviceMenu = false"
+            @click="$router.push('/course-recommendation')"
           >
-            学习建议
-            <div class="sub-menu" v-show="showAdviceMenu">
-              <router-link to="/course-recommendation">用户课程推荐</router-link>
-              <router-link to="/learning-forum">学习论坛</router-link>
-            </div>
+            课程推荐
           </el-button>
         </div>
       </div>
@@ -34,7 +23,7 @@
           <el-button type="primary" @click="showLoginDialog = true">登录</el-button>
         </template>
         <template v-else>
-          <span class="user-info">张老师</span>
+          <span class="user-info">张成业</span>
         </template>
       </div>
     </header>
@@ -64,8 +53,6 @@ export default {
   name: 'HomePage',
   data() {
     return {
-      showLearningMenu: false,
-      showAdviceMenu: false,
       showLoginDialog: false,
       isLoggedIn: true,
       loginForm: {
@@ -118,28 +105,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.menu-button {
-  position: relative;
-  height: 40px;
-}
-
-.sub-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1000;
-  min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-top: 5px;
 }
 
 .user-info {

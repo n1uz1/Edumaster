@@ -21,16 +21,6 @@ const routes = [
     path: '/course-recommendation',
     name: 'CourseRecommendation',
     component: () => import('../views/CourseRecommendation.vue')
-  },
-  {
-    path: '/learning-forum',
-    name: 'LearningForum',
-    component: () => import('../views/LearningForum.vue')
-  },
-  {
-    path: '/forum-post/:postId',
-    name: 'ForumPost',
-    component: () => import('../views/ForumPost.vue')
   }
 ]
 

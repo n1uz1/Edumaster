@@ -6,25 +6,14 @@
       </div>
       <div class="header-center">
         <el-button 
-          class="menu-button" 
-          @mouseenter="showLearningMenu = true"
-          @mouseleave="showLearningMenu = false"
+          @click="$router.push('/course-management')"
         >
-          课程学习
-          <div class="sub-menu" v-show="showLearningMenu">
-            <router-link to="/course-management">课程管理</router-link>
-          </div>
+          课程管理
         </el-button>
         <el-button 
-          class="menu-button"
-          @mouseenter="showAdviceMenu = true"
-          @mouseleave="showAdviceMenu = false"
-        >
-          学习建议
-          <div class="sub-menu" v-show="showAdviceMenu">
-            <router-link to="/course-recommendation">用户课程推荐</router-link>
-            <router-link to="/learning-forum">学习论坛</router-link>
-          </div>
+          @click="$router.push('/course-recommendation')"
+        > 
+          课程推荐
         </el-button>
       </div>
       <div class="header-right">
@@ -34,7 +23,7 @@
           <el-button type="primary" @click="handlePublishCourse">创建课程</el-button>
         </div>
         <div class="user-info">
-          <span class="username" ref="username">张老师</span>
+          <span class="username" ref="username">张成业</span>
         </div>
       </div>
     </header>
@@ -336,8 +325,6 @@ export default {
   name: 'CourseManagement',
   data() {
     return {
-      showLearningMenu: false,
-      showAdviceMenu: false,
       fileUrl: '',
       searchQuery: '',
       currentPage: 1,

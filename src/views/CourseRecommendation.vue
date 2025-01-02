@@ -6,30 +6,19 @@
       </div>
       <div class="header-center">
         <el-button 
-          class="menu-button" 
-          @mouseenter="showLearningMenu = true"
-          @mouseleave="showLearningMenu = false"
+          @click="$router.push('/course-management')"
         >
-          课程学习
-          <div class="sub-menu" v-show="showLearningMenu">
-            <router-link to="/course-management">课程管理</router-link>
-          </div>
+          课程管理
         </el-button>
         <el-button 
-          class="menu-button"
-          @mouseenter="showAdviceMenu = true"
-          @mouseleave="showAdviceMenu = false"
+          @click="$router.push('/course-recommendation')"
         >
-          学习建议
-          <div class="sub-menu" v-show="showAdviceMenu">
-            <router-link to="/course-recommendation">用户课程推荐</router-link>
-            <router-link to="/learning-forum">学习论坛</router-link>
-          </div>
+          课程推荐
         </el-button>
       </div>
       <div class="header-right">
         <el-button @click="$router.push('/')">返回首页</el-button>
-        <div class="user-info">xxxxxxx XXX</div>
+        <div class="user-info">张成业</div>
       </div>
     </header>
 
@@ -50,58 +39,34 @@
       </div>
 
       <div class="recommendation-section">
-        <h3>基于您的兴趣推荐</h3>
-        <el-row :gutter="20">
-          <el-col :span="8" v-for="course in recommendedCourses" :key="course.id">
-            <el-card class="course-card">
-              <img :src="course.image" class="course-image">
-              <div class="course-info">
-                <h4>{{ course.name }}</h4>
-                <p>{{ course.description }}</p>
-                <div class="course-meta">
-                  <span>{{ course.duration }}</span>
-                  <span>{{ course.level }}</span>
-                </div>
-                <div class="course-tags">
-                  <el-tag size="small" v-for="tag in course.tags" :key="tag">
-                    {{ tag }}
-                  </el-tag>
-                </div>
-                <el-button type="primary" @click="viewCourse(course)">查看详情</el-button>
+        <h2>基于您的兴趣推荐</h2>
+        <div class="course-list">
+          <el-card v-for="course in recommendedCourses" :key="course.id" class="course-item">
+            <div class="course-info">
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.description }}</p>
+              <div class="course-meta">
+                <span>讲师: {{ course.instructor }}</span>
               </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </div>
-
-      <div class="popular-section">
-        <h3>热门推荐</h3>
-        <el-table :data="popularCourses" style="width: 100%">
-          <el-table-column prop="name" label="课程名称" />
-          <el-table-column prop="instructor" label="讲师" />
-          <el-table-column prop="rating" label="评分">
-            <template #default="scope">
-              <el-rate
-                v-model="scope.row.rating"
-                disabled
-                show-score
-                text-color="#ff9900"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column prop="enrollCount" label="报名人数" />
-          <el-table-column fixed="right" label="操作">
-            <template #default="scope">
+            </div>
+            <div class="course-actions">
               <el-button
-                type="text"
+                type="primary"
                 size="small"
-                @click="viewCourse(scope.row)"
+                @click="$router.push({
+                  path: `/course-detail/${course.id}`,
+                  query: {
+                    title: course.title,
+                    description: course.description,
+                    courseId: course.id
+                  }
+                })"
               >
-                查看详情
+                进入课程
               </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            </div>
+          </el-card>
+        </div>
       </div>
     </div>
 
@@ -135,34 +100,40 @@ export default {
   name: 'CourseRecommendation',
   data() {
     return {
-      showLearningMenu: false,
-      showAdviceMenu: false,
-      userInterests: ['Web开发', 'Python', '人工智能'],
+      userInterests: ['Spring Boot', 'Spring Cloud', 'Spring Security'],
       dialogVisible: false,
       selectedInterests: [],
       availableInterests: [
-        { value: 'java', label: 'Java开发' },
-        { value: 'python', label: 'Python' },
-        { value: 'ai', label: '人工智能' }
+        { value: 'spring-boot', label: 'Spring Boot' },
+        { value: 'spring-cloud', label: 'Spring Cloud' },
+        { value: 'spring-security', label: 'Spring Security' },
+        { value: 'spring-data', label: 'Spring Data' },
+        { value: 'spring-mvc', label: 'Spring MVC' }
       ],
       recommendedCourses: [
         {
           id: 1,
-          name: 'Vue.js实战课程',
-          description: '从入门到精通的Vue.js课程',
-          image: '/course1.jpg',
-          duration: '30课时',
-          level: '中级',
-          tags: ['Vue', 'JavaScript', '前端开发']
-        }
-      ],
-      popularCourses: [
+          title: 'Spring Boot入门实战',
+          description: '从零开始学习Spring Boot，包含核心概念、自动配置、数据访问等重要知识',
+          instructor: '张老师'
+        },
         {
-          id: 1,
-          name: 'Python数据分析',
-          instructor: '李四',
-          rating: 4.5,
-          enrollCount: 1200
+          id: 2,
+          title: 'Spring Cloud微服务架构',
+          description: '深入学习Spring Cloud微服务开发，包括服务注册、配置中心、服务调用等',
+          instructor: '李老师'
+        },
+        {
+          id: 3,
+          title: 'Spring Security安全框架',
+          description: '全面掌握Spring Security，包括认证授权、安全配置、OAuth2等安全特性',
+          instructor: '王老师'
+        },
+        {
+          id: 4,
+          title: 'Spring全家桶实战',
+          description: '整合Spring Boot、Spring Cloud、Spring Security等技术栈的综合实战课程',
+          instructor: '赵老师'
         }
       ]
     }
@@ -179,7 +150,7 @@ export default {
     },
     viewCourse(course) {
       console.log('Viewing course:', course.name)
-    }
+    },
   }
 }
 </script>
@@ -209,28 +180,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.menu-button {
-  position: relative;
-  height: 40px;
-}
-
-.sub-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 1000;
-  min-width: 150px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-top: 5px;
 }
 
 .user-info {
@@ -283,23 +232,43 @@ a:hover {
 }
 
 .course-info {
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.course-info h4 {
+.course-info h3 {
   margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #303133;
 }
 
-.course-meta {
-  display: flex;
-  justify-content: space-between;
-  color: #666;
+.description {
   margin: 10px 0;
+  color: #606266;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.course-tags {
-  margin: 10px 0;
-  display: flex;
-  gap: 5px;
+.course-id {
+  color: #909399;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.instructor {
+  color: #909399;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.course-actions {
+  margin-top: auto;
+  text-align: right;
 }
 </style> 
