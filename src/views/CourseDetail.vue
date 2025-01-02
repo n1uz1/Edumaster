@@ -4,7 +4,7 @@
       <h1>课程详情</h1>
       <el-button @click="$router.push('/course-management')">返回</el-button>
       <el-button type="primary" @click="showAddLessonDialog">添加课程文件</el-button>
-      <div class="user-info">张老师</div>
+      <div class="user-info">张成业</div>
     </header>
 
     <div class="course-content">
@@ -114,6 +114,31 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 评论弹窗 -->
+    <el-dialog v-model="showComments" :title="`${currentFile.title} - 评论`" width="50%">
+      <div class="comments-section">
+        <!-- 评论输入框 -->
+        <div class="comments-input">
+          <el-input
+            v-model="newComment"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入您的评论..."
+          />
+          <el-button type="primary" @click="submitComment">发送评论</el-button>
+        </div>
+
+        <!-- 评论列表 -->
+        <div class="comments-list">
+          <div v-for="comment in comments" :key="comment.id" class="comment-item">
+            <div class="comment-user">{{ comment.username }}</div>
+            <div class="comment-content">{{ comment.content }}</div>
+            <span class="comment-date">{{ comment.date }}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -158,15 +183,15 @@ export default {
       comments: [
         {
           id: 1,
-          username: 'A',
+          username: '陈凌凡',
           content: '这节课讲得很清楚！',
-          date: '2024-03-15 14:57'
+          date: '2024-12-16 14:57'
         },
         {
           id: 2,
-          username: 'B',
+          username: '刘政岩',
           content: '有些概念需要多加练习。',
-          date: '2024-03-15 15:06'
+          date: '2024-12-16 15:06'
         }
       ],
       showVideoPlayer: false,
@@ -206,7 +231,6 @@ export default {
         type: file.type,
         url: file.url
       }
-      this.dialogVisible = true
       this.showComments = true
     },
     submitComment() {
@@ -401,9 +425,7 @@ h1 {
 }
 
 .comments-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
+  padding: 20px 0;
 }
 
 .comments-input {
@@ -416,18 +438,28 @@ h1 {
   flex: 1;
 }
 
+.comments-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .comment-item {
-  padding: 10px;
+  padding: 15px;
   border-bottom: 1px solid #eee;
 }
 
 .comment-user {
   font-weight: bold;
-  margin-bottom: 5px;
   color: #409EFF;
+  margin-bottom: 5px;
 }
 
-.comment-item span {
+.comment-content {
+  color: #333;
+  margin: 5px 0;
+}
+
+.comment-date {
   font-size: 12px;
   color: #999;
   display: block;
