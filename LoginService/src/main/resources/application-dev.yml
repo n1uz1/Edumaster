@@ -1,0 +1,59 @@
+# 开发环境配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka
+server:
+  port: 8084  # 设置新的端口号
+springdoc:
+  paths-to-match: /api/**
+  swagger-ui:
+    operations-sorter: alpha
+spring:
+  application:
+    name: login-service
+  profiles:
+    active: '@environment@'
+  mail:
+    host: smtp.qq.com
+    username: 1393188948@qq.com
+    password: srbwrpmptnnibada  # 这里是你生成的 QQ 邮箱的应用专用密码
+    port: 465  # QQ 邮箱的 SSL 端口
+    protocol: smtp  # 使用 SMTP 协议
+    properties:
+      mail.smtp.auth: true  # 启用 SMTP 身份验证
+      mail.smtp.starttls.enable: true  # 启用 TLS
+      mail.smtp.ssl.enable: true  # 启用 SSL
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory  # 设置 SSL Socket 工厂类
+      mail.smtp.socketFactory.fallback: false
+  rabbitmq:
+    addresses: localhost
+    username: admin
+    password: admin
+    virtual-host: /
+  datasource:
+    url: jdbc:mysql://47.101.197.21:3306/Edumaster
+    username: dmsTest
+    password: Ecs@123****
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  security:
+    jwt:
+      key: 'abcdefghijklmn'
+      expire: 72
+      limit:
+        base: 10
+        upgrade: 300
+        frequency: 30
+    filter:
+      order: -100
+  web:
+    verify:
+      mail-limit: 60
+    flow:
+      period: 3
+      limit: 50
+      block: 30
+    cors:
+      origin: '*'
+      credentials: false
+      methods: '*'

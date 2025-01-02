@@ -1,0 +1,2 @@
+创建mysql数据库与rabbitmq队列的镜像
+改变lombok的版本

@@ -26,6 +26,8 @@ public class Routes {
     private String courseServiceUrl;
     @Value("${auth.service.url}")
     private String authServiceUrl;
+    @Value("${llm.service.url}")
+    private String llmServiceUrl;
 
 
     @Bean
@@ -50,6 +52,12 @@ public class Routes {
         return GatewayRouterFunctions.route("auth_service")
                .route(RequestPredicates.path("/auth/**"), HandlerFunctions.http(authServiceUrl))
                .build();
+    }
+    @Bean
+    public RouterFunction<ServerResponse> authServiceRoute() {
+        return GatewayRouterFunctions.route("llm_service")
+                .route(RequestPredicates.path("/courseRecommend/**"), HandlerFunctions.http(authServiceUrl))
+                .build();
     }
 
 

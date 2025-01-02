@@ -1,0 +1,105 @@
+2025-01-02 16:26:14.559  INFO 15388 --- [main] (system) c.example.MyProjectBackendApplication    : Starting MyProjectBackendApplication using Java 23.0.1 with PID 15388 (C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend\target\classes started by 13931 in C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend)
+2025-01-02 16:26:14.562  INFO 15388 --- [main] (system) c.example.MyProjectBackendApplication    : The following 1 profile is active: "dev"
+2025-01-02 16:26:15.932  INFO 15388 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-01-02 16:26:15.935  INFO 15388 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-01-02 16:26:15.971  INFO 15388 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+2025-01-02 16:26:16.799  INFO 15388 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2025-01-02 16:26:16.819  INFO 15388 --- [main] (system) o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-01-02 16:26:16.819  INFO 15388 --- [main] (system) o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-01-02 16:26:16.904  INFO 15388 --- [main] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-01-02 16:26:16.905  INFO 15388 --- [main] (system) w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2245 ms
+2025-01-02 16:26:18.041  INFO 15388 --- [main] (system) r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name accountServiceImpl
+2025-01-02 16:26:18.867  INFO 15388 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2025-01-02 16:26:18.871  INFO 15388 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2025-01-02 16:26:19.022  INFO 15388 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#280ecc33:0/SimpleConnection@19540247 [delegate=amqp://admin@127.0.0.1:5672/, localPort=61368]
+2025-01-02 16:26:19.093  INFO 15388 --- [main] (system) c.example.MyProjectBackendApplication    : Started MyProjectBackendApplication in 5.476 seconds (process running for 6.605)
+2025-01-02 16:27:19.234  INFO 15388 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Waiting for workers to finish.
+2025-01-02 16:27:19.571  INFO 15388 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Successfully waited for workers to finish.
+2025-01-02 16:27:55.916  INFO 3268 --- [main] (system) c.example.MyProjectBackendApplication    : Starting MyProjectBackendApplication using Java 23.0.1 with PID 3268 (C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend\target\classes started by 13931 in C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend)
+2025-01-02 16:27:55.919  INFO 3268 --- [main] (system) c.example.MyProjectBackendApplication    : The following 1 profile is active: "dev"
+2025-01-02 16:27:56.899  INFO 3268 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-01-02 16:27:56.901  INFO 3268 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-01-02 16:27:56.928  INFO 3268 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 Redis repository interfaces.
+2025-01-02 16:27:57.583  INFO 3268 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2025-01-02 16:27:57.598  INFO 3268 --- [main] (system) o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-01-02 16:27:57.598  INFO 3268 --- [main] (system) o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-01-02 16:27:57.662  INFO 3268 --- [main] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-01-02 16:27:57.663  INFO 3268 --- [main] (system) w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1670 ms
+2025-01-02 16:27:58.647  INFO 3268 --- [main] (system) r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name accountServiceImpl
+2025-01-02 16:27:59.290  INFO 3268 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2025-01-02 16:27:59.293  INFO 3268 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2025-01-02 16:27:59.336  INFO 3268 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#73a49597:0/SimpleConnection@192ecf8 [delegate=amqp://admin@127.0.0.1:5672/, localPort=61502]
+2025-01-02 16:27:59.391  INFO 3268 --- [main] (system) c.example.MyProjectBackendApplication    : Started MyProjectBackendApplication in 4.179 seconds (process running for 4.98)
+2025-01-02 16:29:52.777  INFO 3268 --- [http-nio-8085-exec-1] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-01-02 16:29:52.778  INFO 3268 --- [http-nio-8085-exec-1] (system) o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-01-02 16:29:52.781  INFO 3268 --- [http-nio-8085-exec-1] (system) o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-01-02 16:29:53.980  INFO 3268 --- [http-nio-8085-exec-1] (187563754219769856) com.example.filter.RequestLogFilter      : 请求URL: "/api/auth/ask-code" (OPTIONS) | 远程IP地址: 0:0:0:0:0:0:0:1 │ 身份: 未验证 | 请求参数列表: {"email":"2250764@tongji.edu.cn","type":"register"}
+2025-01-02 16:29:54.349  INFO 3268 --- [http-nio-8085-exec-1] (187563754219769856) com.example.filter.RequestLogFilter      : 请求处理耗时: 375ms | 响应结果: 
+2025-01-02 16:29:54.418  INFO 3268 --- [http-nio-8085-exec-5] (187563756082040832) com.example.filter.RequestLogFilter      : 请求URL: "/api/auth/ask-code" (GET) | 远程IP地址: 0:0:0:0:0:0:0:1 │ 身份: 未验证 | 请求参数列表: {"email":"2250764@tongji.edu.cn","type":"register"}
+2025-01-02 16:29:54.918  INFO 3268 --- [http-nio-8085-exec-5] (187563756082040832) com.example.filter.RequestLogFilter      : 请求处理耗时: 500ms | 响应结果: {"id":187563756082040832,"code":200,"data":null,"message":"请求成功"}
+2025-01-02 16:30:18.123  INFO 3268 --- [http-nio-8085-exec-4] (187563855508017152) com.example.filter.RequestLogFilter      : 请求URL: "/api/auth/register" (OPTIONS) | 远程IP地址: 0:0:0:0:0:0:0:1 │ 身份: 未验证 | 请求参数列表: {}
+2025-01-02 16:30:18.126  INFO 3268 --- [http-nio-8085-exec-4] (187563855508017152) com.example.filter.RequestLogFilter      : 请求处理耗时: 3ms | 响应结果: 
+2025-01-02 16:30:18.141  INFO 3268 --- [http-nio-8085-exec-6] (187563855579320320) com.example.filter.RequestLogFilter      : 请求URL: "/api/auth/register" (POST) | 远程IP地址: 0:0:0:0:0:0:0:1 │ 身份: 未验证 | 请求参数列表: {}
+2025-01-02 16:30:18.556  INFO 3268 --- [http-nio-8085-exec-6] (187563855579320320) com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-01-02 16:30:19.224  INFO 3268 --- [http-nio-8085-exec-6] (187563855579320320) com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@43798f54
+2025-01-02 16:30:19.228  INFO 3268 --- [http-nio-8085-exec-6] (187563855579320320) com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-01-02 16:30:19.553  INFO 3268 --- [http-nio-8085-exec-6] (187563855579320320) com.example.filter.RequestLogFilter      : 请求处理耗时: 1413ms | 响应结果: {"id":187563855579320320,"code":200,"data":null,"message":"请求成功"}
+2025-01-02 16:30:26.889  INFO 3268 --- [http-nio-8085-exec-2] (187563892275286016) com.example.filter.RequestLogFilter      : 请求URL: "/api/auth/login" (POST) | 远程IP地址: 0:0:0:0:0:0:0:1 │ 身份: 未验证 | 请求参数列表: {"username":"n1zu1","password":"111111"}
+2025-01-02 16:30:27.448  INFO 3268 --- [http-nio-8085-exec-2] (187563892275286016) com.example.filter.RequestLogFilter      : 请求处理耗时: 559ms | 响应结果: {"code":200,"data":{"expire":"2025-01-05 16:30:27.373","role":"user","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoibjF6dTEiLCJpZCI6NiwiZXhwIjoxNzM2MDY1ODI3LCJpYXQiOjE3MzU4MDY2MjcsImp0aSI6IjY4ZWQ4OTIwLTQxMTItNDNhYS1iMzNjLWYxNzBlZWY3ZTA3NiIsImF1dGhvcml0aWVzIjpbIlJPTEVfdXNlciJdfQ.By9WFKGCNrvaG4DcIQNsZWEbZdLWGpTcpImS1BoRsXQ","username":"n1zu1"},"id":187563892275286016,"message":"请求成功"}
+2025-01-02 16:32:33.616  INFO 3268 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Waiting for workers to finish.
+2025-01-02 16:32:34.140  INFO 3268 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Successfully waited for workers to finish.
+2025-01-02 16:32:34.239  INFO 3268 --- [SpringApplicationShutdownHook] (system) com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-01-02 16:32:34.248  INFO 3268 --- [SpringApplicationShutdownHook] (system) com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-01-02 18:42:50.174  INFO 37984 --- [main] (system) c.example.MyProjectBackendApplication    : Starting MyProjectBackendApplication using Java 23.0.1 with PID 37984 (C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend\target\classes started by 13931 in C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend)
+2025-01-02 18:42:50.176  INFO 37984 --- [main] (system) c.example.MyProjectBackendApplication    : The following 1 profile is active: "dev"
+2025-01-02 18:42:51.572  INFO 37984 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-01-02 18:42:51.578  INFO 37984 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-01-02 18:42:51.613  INFO 37984 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2025-01-02 18:42:52.539  INFO 37984 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2025-01-02 18:42:52.558  INFO 37984 --- [main] (system) o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-01-02 18:42:52.559  INFO 37984 --- [main] (system) o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-01-02 18:42:52.654  INFO 37984 --- [main] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-01-02 18:42:52.655  INFO 37984 --- [main] (system) w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2403 ms
+2025-01-02 18:42:54.083  INFO 37984 --- [main] (system) r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name accountServiceImpl
+2025-01-02 18:42:54.974  INFO 37984 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2025-01-02 18:42:54.982  INFO 37984 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2025-01-02 18:42:55.169  INFO 37984 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#31b6b0c7:0/SimpleConnection@3e8fe7db [delegate=amqp://admin@127.0.0.1:5672/, localPort=65048]
+2025-01-02 18:42:55.316  INFO 37984 --- [main] (system) c.example.MyProjectBackendApplication    : Started MyProjectBackendApplication in 6.028 seconds (process running for 7.124)
+2025-01-02 18:44:35.026  INFO 37984 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Waiting for workers to finish.
+2025-01-02 18:44:35.876  INFO 37984 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Successfully waited for workers to finish.
+2025-01-02 18:44:41.621  INFO 3484 --- [main] (system) c.example.MyProjectBackendApplication    : Starting MyProjectBackendApplication using Java 23.0.1 with PID 3484 (C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend\target\classes started by 13931 in C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend)
+2025-01-02 18:44:41.623  INFO 3484 --- [main] (system) c.example.MyProjectBackendApplication    : The following 1 profile is active: "dev"
+2025-01-02 18:44:42.815  INFO 3484 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-01-02 18:44:42.817  INFO 3484 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-01-02 18:44:42.841  INFO 3484 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
+2025-01-02 18:44:43.703  INFO 3484 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2025-01-02 18:44:43.724  INFO 3484 --- [main] (system) o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-01-02 18:44:43.725  INFO 3484 --- [main] (system) o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-01-02 18:44:43.823  INFO 3484 --- [main] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-01-02 18:44:43.823  INFO 3484 --- [main] (system) w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2127 ms
+2025-01-02 18:44:45.055  INFO 3484 --- [main] (system) r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name accountServiceImpl
+2025-01-02 18:44:45.735  INFO 3484 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2025-01-02 18:44:45.740  INFO 3484 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2025-01-02 18:44:45.842  INFO 3484 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#586737ff:0/SimpleConnection@10508ba6 [delegate=amqp://admin@127.0.0.1:5672/, localPort=65254]
+2025-01-02 18:44:45.917  INFO 3484 --- [main] (system) c.example.MyProjectBackendApplication    : Started MyProjectBackendApplication in 5.034 seconds (process running for 5.921)
+2025-01-02 18:46:26.970  INFO 3484 --- [http-nio-8085-exec-1] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-01-02 18:46:26.977  INFO 3484 --- [http-nio-8085-exec-1] (system) o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-01-02 18:46:27.006  INFO 3484 --- [http-nio-8085-exec-1] (system) o.s.web.servlet.DispatcherServlet        : Completed initialization in 27 ms
+2025-01-02 18:46:28.666  INFO 3484 --- [http-nio-8085-exec-8] (system) o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 1022 ms
+2025-01-02 18:46:59.296  INFO 3484 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Waiting for workers to finish.
+2025-01-02 18:46:59.328  INFO 3484 --- [org.springframework.amqp.rabbit.RabbitListenerEndpointContainer#0-2] (system) o.s.a.r.l.SimpleMessageListenerContainer : Successfully waited for workers to finish.
+2025-01-02 18:47:04.451  INFO 27632 --- [main] (system) c.example.MyProjectBackendApplication    : Starting MyProjectBackendApplication using Java 23.0.1 with PID 27632 (C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend\target\classes started by 13931 in C:\Users\13931\Desktop\SpringBoot-Vue-Template-Jwt-main\my-project-backend)
+2025-01-02 18:47:04.454  INFO 27632 --- [main] (system) c.example.MyProjectBackendApplication    : The following 1 profile is active: "dev"
+2025-01-02 18:47:05.538  INFO 27632 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-01-02 18:47:05.541  INFO 27632 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-01-02 18:47:05.570  INFO 27632 --- [main] (system) .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 0 Redis repository interfaces.
+2025-01-02 18:47:06.316  INFO 27632 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2025-01-02 18:47:06.332  INFO 27632 --- [main] (system) o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-01-02 18:47:06.333  INFO 27632 --- [main] (system) o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-01-02 18:47:06.414  INFO 27632 --- [main] (system) o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-01-02 18:47:06.415  INFO 27632 --- [main] (system) w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1886 ms
+2025-01-02 18:47:07.594  INFO 27632 --- [main] (system) r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name accountServiceImpl
+2025-01-02 18:47:08.202  INFO 27632 --- [main] (system) o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2025-01-02 18:47:08.207  INFO 27632 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:5672]
+2025-01-02 18:47:08.251  INFO 27632 --- [main] (system) o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#31b6b0c7:0/SimpleConnection@62e586a6 [delegate=amqp://admin@127.0.0.1:5672/, localPort=65441]
+2025-01-02 18:47:08.437  INFO 27632 --- [main] (system) c.example.MyProjectBackendApplication    : Started MyProjectBackendApplication in 4.751 seconds (process running for 5.519)
