@@ -17,7 +17,7 @@ public class CourseRecommendController {
         this.courseRecommendService = courseRecommendService;
     }
 
-    @GetMapping("/getCourseRecommend")
+    @GetMapping("/CourseRecommend")
     public List<String> getCourseRecommend(@RequestParam String content) {
         return courseRecommendService.getRecommendedCourses(content);  // 获取推荐的课程
     }
