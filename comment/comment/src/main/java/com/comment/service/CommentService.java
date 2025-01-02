@@ -16,4 +16,6 @@ public interface CommentService {
     List<Comment> getCommentsByVideo(Long courseId, Long lessonId);
     // 新增方法：获取论坛评论
     List<Comment> getForumComments();
+    // 根据 courseId 和 lessonId 删除课程视频的所有评论
+    boolean deleteCommentsByVideo(Long courseId, Long lessonId);
 }

@@ -118,4 +118,14 @@ public class CommentServiceImpl implements CommentService {
         }
         return comments;
     }
+    @Override
+    public boolean deleteCommentsByVideo(Long courseId, Long lessonId) {
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("course_id", courseId);
+        queryWrapper.eq("lesson_id", lessonId);
+
+        int deletedRows = commentMapper.delete(queryWrapper);
+
+        return deletedRows > 0;
+    }
 }

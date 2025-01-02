@@ -81,5 +81,10 @@ public class CommentController {
     public List<Comment> getForumComments() {
         return commentService.getForumComments();
     }
+    // 根据视频的 courseId 和 lessonId 删除该视频的所有评论
+    @DeleteMapping("/lesson/{courseId}/{lessonId}")
+    public void deleteCommentsByVideo(@PathVariable Long courseId, @PathVariable Long lessonId) {
+        commentService.deleteCommentsByVideo(courseId, lessonId);
+    }
 
 }
