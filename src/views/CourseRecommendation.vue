@@ -17,6 +17,13 @@
         </el-button>
       </div>
       <div class="header-right">
+        <el-button 
+          class="get-recommended-courses-button"
+          type="primary" 
+          @click="getRecommendedCourses"
+        >
+          获取推荐课程
+        </el-button>
         <el-button @click="$router.push('/')">返回首页</el-button>
         <div class="user-info">张成业</div>
       </div>
@@ -96,6 +103,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'CourseRecommendation',
   data() {
@@ -151,6 +160,28 @@ export default {
     viewCourse(course) {
       console.log('Viewing course:', course.name)
     },
+    async getRecommendedCourses() {
+      try {
+        const content = this.tag
+        const response = await axios.get(`http://localhost:8081/courseRecommend?content=${content}`)
+        
+        if (response.data) {
+          // 更新推荐课程列表
+          this.recommendedCourses = response.data.map(course => ({
+            id: course.course_id,
+            title: course.title,
+            description: course.description,
+            instructor: course.username
+          }))
+          
+          if (this.recommendedCourses.length === 0) {
+            this.$message.info('暂无推荐课程')
+          }
+        }
+      } catch (error) {
+        this.$message.error('获取推荐课程失败：' + error.message)
+      }
+    }
   }
 }
 </script>
@@ -253,6 +284,10 @@ a:hover {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.get-recommended-courses-button{
+  visibility: hidden;
 }
 
 .course-id {
